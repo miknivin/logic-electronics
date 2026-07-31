@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Logic Electronics">
+  <title>Logic Electronics</title>
+  <!-- Rounded container -->
+  <rect x="4.5" y="4.5" width="91" height="91" rx="15" fill="#ffffff" stroke="#14479B" stroke-width="5" />
+
+  <!-- Orange "L" -->
+  <path d="M26 16 H52 V66 H86 V84 H32 L26 78 Z" fill="#EE6A24" />
+
+  <!-- Blue top arm -->
+  <path d="M56 16 H86 V26 L79 32 H56 Z" fill="#14479B" />
+
+  <!-- Diode symbol: conductor, cathode bar and anode triangle -->
+  <path d="M20 47.5 H90 V52.5 H20 Z" fill="#14479B" />
+  <path d="M55.5 30 H60.5 V70 H55.5 Z" fill="#14479B" />
+  <path d="M88 33 V67 L61 50 Z" fill="#14479B" />
+</svg>
