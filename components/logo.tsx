@@ -1,49 +1,49 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import logoMark from "@/public/logo-mark.svg";
+import mark from "@/public/logo-mark.png";
+import wordmark from "@/public/logo-wordmark.png";
 
 type LogoProps = {
-  /** Renders the wordmark in white for use on dark backgrounds. */
-  inverted?: boolean;
-  className?: string;
+  /** `md` suits the header, `lg` the footer where there is more room. */
+  size?: "md" | "lg";
+  priority?: boolean;
 };
 
 /**
- * Brand lockup: the logo mark plus the wordmark.
+ * The company logo, linking home.
  *
- * The mark lives at `public/logo-mark.svg`. Drop the official artwork in at
- * that path to swap it out without touching any code.
+ * The official artwork in `public/logo.png` is a stacked lockup, which is far
+ * too tall to stay legible in a horizontal header. The mark and wordmark are
+ * therefore split into `logo-mark.png` and `logo-wordmark.png` and set side by
+ * side here, so the header stays a sensible height and the wordmark is still
+ * readable. Both files are cropped straight from the original artwork.
  */
-export function Logo({ inverted = false, className = "" }: LogoProps) {
+export function Logo({ size = "md", priority = false }: LogoProps) {
+  const markSize = size === "lg" ? "h-14" : "h-12";
+  const wordmarkSize = size === "lg" ? "h-10" : "h-9";
+
   return (
     <Link
       href="/"
-      className={`group inline-flex items-center gap-3 ${className}`}
+      className="inline-flex shrink-0 items-center gap-2.5"
       aria-label="Logic Electronics, home"
     >
+      {/* Decorative: the wordmark beside it already carries the company name. */}
       <Image
-        src={logoMark}
+        src={mark}
         alt=""
-        width={44}
-        height={44}
-        priority
-        className="h-10 w-10 shrink-0 sm:h-11 sm:w-11"
+        priority={priority}
+        sizes="72px"
+        className={`${markSize} w-auto`}
       />
-      <span className="flex flex-col leading-none">
-        <span className="text-xl font-extrabold tracking-tight sm:text-[1.375rem]">
-          <span className="text-secondary-500">L</span>
-          <span className={inverted ? "text-white" : "text-primary-700"}>O</span>
-          <span className="text-secondary-500">GIC</span>
-        </span>
-        <span
-          className={`mt-1 text-[0.5625rem] font-semibold tracking-[0.2em] ${
-            inverted ? "text-primary-100" : "text-primary-800"
-          }`}
-        >
-          ELECTRONICS
-        </span>
-      </span>
+      <Image
+        src={wordmark}
+        alt="Logic Electronics"
+        priority={priority}
+        sizes="110px"
+        className={`${wordmarkSize} w-auto`}
+      />
     </Link>
   );
 }

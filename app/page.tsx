@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import heroImage from "@/public/imgs/logic-banner-img.jpg";
+import whyChooseUsImage from "@/public/imgs/why-choose-us.jpg";
 import { BrandGrid } from "@/components/brand-grid";
 import { Container } from "@/components/container";
 import { CtaBand } from "@/components/cta-band";
@@ -238,7 +239,7 @@ export default function HomePage() {
       {/* ------------------------------------------------------------- why */}
       <section className="py-20 sm:py-24">
         <Container>
-          <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
+          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <div>
               <SectionHeading
                 align="left"
@@ -264,25 +265,46 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              {differentiators.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.title}
-                    className="rounded-xl border border-slate-200 bg-white p-6"
-                  >
-                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50 text-primary-700">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </span>
-                    <h3 className="mt-4 text-base font-bold">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                      {item.description}
-                    </p>
-                  </div>
-                );
-              })}
+            {/* Supporting image */}
+            <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
+              {/* Offset orange block, matching the hero treatment. */}
+              <span
+                className="absolute -bottom-4 -right-4 h-24 w-24 rounded-2xl bg-secondary-500 sm:-bottom-5 sm:-right-5 sm:h-28 sm:w-28"
+                aria-hidden="true"
+              />
+              {/* Fixed ratio so the tall source photo cannot dwarf the text
+                  column beside it. */}
+              <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-xl ring-1 ring-slate-200">
+                <Image
+                  src={whyChooseUsImage}
+                  alt="A member of staff checking a job on a tablet beside an office printer"
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 34rem, (min-width: 640px) 24rem, 100vw"
+                  className="h-full w-full object-cover"
+                />
+              </div>
             </div>
+          </div>
+
+          {/* Differentiators, sitting full width beneath the intro. */}
+          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
+            {differentiators.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="rounded-xl border border-slate-200 bg-white p-6"
+                >
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50 text-primary-700">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-4 text-base font-bold">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    {item.description}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </Container>
       </section>

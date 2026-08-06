@@ -51,10 +51,10 @@ export function SiteHeader() {
       {/* Main navigation */}
       <Container>
         <nav
-          className="flex h-18 items-center justify-between gap-4 py-3"
+          className="flex items-center justify-between gap-4 py-3"
           aria-label="Main"
         >
-          <Logo />
+          <Logo priority />
 
           <div className="hidden items-center gap-1 md:flex">
             {navLinks.map((link) => (

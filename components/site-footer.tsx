@@ -23,7 +23,7 @@ export function SiteFooter() {
           {/* Brand */}
           <div className="lg:col-span-4">
             <div className="inline-flex rounded-lg bg-white px-3 py-2">
-              <Logo />
+              <Logo size="lg" />
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-primary-200">
               {site.legalName}. A leading electronics service centre and office

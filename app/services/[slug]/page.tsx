@@ -147,7 +147,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
             {/* Sticky sidebar */}
             <aside className="lg:col-span-4">
-              <div className="lg:sticky lg:top-28">
+              <div className="lg:sticky lg:top-32">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-7">
                   <h2 className="text-lg font-bold">Why choose us</h2>
                   <ul className="mt-5 space-y-3.5">

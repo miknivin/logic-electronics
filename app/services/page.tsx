@@ -53,7 +53,7 @@ export default function ServicesPage() {
           <section
             key={category.key}
             id={category.key}
-            className={`scroll-mt-24 py-16 sm:py-20 ${
+            className={`scroll-mt-32 py-16 sm:py-20 ${
               index % 2 === 1 ? "bg-slate-50" : ""
             }`}
           >

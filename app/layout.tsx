@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     description: site.description,
   },
   robots: { index: true, follow: true },
-  icons: { icon: "/logo-mark.svg" },
+  icons: { icon: "/icon.png" },
 };
 
 /** Organisation schema so search engines pick up branches and contact details. */
