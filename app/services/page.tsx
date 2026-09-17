@@ -4,6 +4,7 @@ import { Container } from "@/components/container";
 import { CtaBand } from "@/components/cta-band";
 import { PageHeader } from "@/components/page-header";
 import { ServiceCard } from "@/components/service-card";
+import { ServiceCategoryNav } from "@/components/service-category-nav";
 import {
   getServicesByCategory,
   serviceCategories,
@@ -28,20 +29,7 @@ export default function ServicesPage() {
       {/* Category quick-nav */}
       <section className="border-b border-slate-200 bg-slate-50">
         <Container>
-          <nav aria-label="Service categories">
-            <ul className="flex flex-wrap gap-2 py-5">
-              {serviceCategories.map((category) => (
-                <li key={category.key}>
-                  <a
-                    href={`#${category.key}`}
-                    className="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-800 ring-1 ring-slate-200 transition-colors hover:bg-primary-700 hover:text-white hover:ring-primary-700"
-                  >
-                    {category.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <ServiceCategoryNav categories={serviceCategories} />
         </Container>
       </section>
 

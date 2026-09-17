@@ -1,29 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  BadgeCheck,
-  Check,
-  Clock,
-  MapPin,
-  Phone,
-  Truck,
-} from "lucide-react";
+import { ArrowRight, BadgeCheck, Clock, MapPin, Truck } from "lucide-react";
 
-import heroImage from "@/public/imgs/logic-banner-img.jpg";
 import whyChooseUsImage from "@/public/imgs/why-choose-us.jpg";
 import { BrandGrid } from "@/components/brand-grid";
 import { Container } from "@/components/container";
 import { CtaBand } from "@/components/cta-band";
+import { HeroSlider } from "@/components/hero-slider";
+import { RentalSection } from "@/components/rental-section";
 import { SectionHeading } from "@/components/section-heading";
 import { ServiceCard } from "@/components/service-card";
+import { ServiceRibbon } from "@/components/service-ribbon";
+import { TrustedClients } from "@/components/trusted-clients";
 import { featuredServices, serviceCategories } from "@/lib/services";
-import {
-  commitments,
-  contact,
-  stats,
-  yearsOfExperience,
-} from "@/lib/site";
+import { stats } from "@/lib/site";
 
 const differentiators = [
   {
@@ -63,93 +53,8 @@ export default function HomePage() {
         />
 
         <Container>
-          <div className="relative grid items-center gap-12 py-16 lg:grid-cols-12 lg:gap-16 lg:py-20">
-            <div className="lg:col-span-7">
-              <p className="inline-flex items-center gap-2 rounded-full bg-primary-800 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-secondary-300 ring-1 ring-primary-700">
-                <BadgeCheck className="h-4 w-4" aria-hidden="true" />
-                ISO 9001:2015 Certified · Since 2000
-              </p>
-
-              <h1 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Solution for all your{" "}
-                <span className="text-secondary-400">office issues</span>
-              </h1>
-
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-primary-100">
-                Logic Electronics is a leading electronics service centre and
-                office supplier in Abu Dhabi. For over {yearsOfExperience} years
-                we have kept printers running, networks secure and offices
-                stocked for multinational, medium and small-scale organisations
-                across the UAE.
-              </p>
-
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/services"
-                  className="inline-flex items-center justify-center gap-2 rounded-md bg-secondary-500 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-secondary-900/20 transition-colors hover:bg-secondary-600"
-                >
-                  Explore Our Services
-                  <ArrowRight className="h-5 w-5" aria-hidden="true" />
-                </Link>
-                <a
-                  href={contact.primaryPhoneHref}
-                  className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-white/30 px-7 py-3.5 text-base font-semibold text-white transition-colors hover:bg-white/10"
-                >
-                  <Phone className="h-5 w-5" aria-hidden="true" />
-                  {contact.primaryPhone}
-                </a>
-              </div>
-            </div>
-
-            {/* Hero image */}
-            <div className="lg:col-span-5">
-              <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
-                {/* Offset orange block, echoing the brochure cover artwork. */}
-                <span
-                  className="absolute -right-4 -top-4 h-24 w-24 rounded-2xl bg-secondary-500 sm:-right-5 sm:-top-5 sm:h-28 sm:w-28"
-                  aria-hidden="true"
-                />
-
-                <div className="relative overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/15">
-                  <Image
-                    src={heroImage}
-                    alt="An office professional collecting documents from a multifunction printer"
-                    placeholder="blur"
-                    priority
-                    sizes="(min-width: 1024px) 30rem, (min-width: 640px) 24rem, 100vw"
-                    className="h-full w-full object-cover"
-                  />
-                  {/* Grounds the photo against the navy background. */}
-                  <div
-                    className="absolute inset-0 bg-linear-to-t from-primary-950/45 via-transparent to-transparent"
-                    aria-hidden="true"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <HeroSlider />
         </Container>
-
-        {/* Commitments strip, kept from the old panel so the selling points
-            stay above the fold now that the image has taken the card slot. */}
-        <div className="relative border-t border-white/10">
-          <Container>
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-4 py-7 sm:grid-cols-3 lg:grid-cols-4">
-              {commitments.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-2.5 text-sm font-medium text-primary-100"
-                >
-                  <Check
-                    className="mt-0.5 h-4 w-4 shrink-0 text-secondary-400"
-                    aria-hidden="true"
-                  />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </Container>
-        </div>
       </section>
 
       {/* ----------------------------------------------------------- stats */}
@@ -173,35 +78,14 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* -------------------------------------------------------- services */}
-      <section className="py-20 sm:py-24">
-        <Container>
-          <SectionHeading
-            eyebrow="What we do"
-            title="Services built around how your office actually works"
-            description="From a jammed printer to a new office IT build, we cover the equipment, the infrastructure and the supplies, all on one account."
-          />
-
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredServices.map((service) => (
-              <ServiceCard key={service.slug} service={service} />
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 rounded-md border-2 border-primary-700 px-7 py-3 text-base font-semibold text-primary-700 transition-colors hover:bg-primary-700 hover:text-white"
-            >
-              View all services
-              <ArrowRight className="h-5 w-5" aria-hidden="true" />
-            </Link>
-          </div>
-        </Container>
-      </section>
+      {/* Commitments, as a sliding ribbon right below the stats (report §2.2). */}
+      <ServiceRibbon />
 
       {/* ------------------------------------------------------ categories */}
-      <section className="bg-slate-50 py-20 sm:py-24">
+      {/* Five areas of expertise now leads, ahead of the services grid
+          (report §3.1), giving visitors the full shape of the business
+          before drilling into individual services. */}
+      <section className="py-20 sm:py-24">
         <Container>
           <SectionHeading
             eyebrow="Five areas of expertise"
@@ -235,6 +119,36 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+
+      {/* -------------------------------------------------------- services */}
+      <section className="bg-slate-50 py-20 sm:py-24">
+        <Container>
+          <SectionHeading
+            eyebrow="What we do"
+            title="Services built around how your office actually works"
+            description="From a jammed printer to a new office IT build, we cover the equipment, the infrastructure and the supplies, all on one account."
+          />
+
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featuredServices.map((service) => (
+              <ServiceCard key={service.slug} service={service} />
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-2 rounded-md border-2 border-primary-700 px-7 py-3 text-base font-semibold text-primary-700 transition-colors hover:bg-primary-700 hover:text-white"
+            >
+              View all services
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            </Link>
+          </div>
+        </Container>
+      </section>
+
+      {/* Rental & AMC section, directly below "What we do" (report §3.2). */}
+      <RentalSection />
 
       {/* ------------------------------------------------------------- why */}
       <section className="py-20 sm:py-24">
@@ -315,11 +229,14 @@ export default function HomePage() {
           <p className="text-center text-sm font-bold uppercase tracking-[0.18em] text-slate-500">
             Brands we supply and service
           </p>
-          <div className="mt-9">
-            <BrandGrid />
-          </div>
         </Container>
+        <div className="mt-9">
+          <BrandGrid />
+        </div>
       </section>
+
+      {/* --------------------------------------------------- trusted clients */}
+      <TrustedClients />
 
       <CtaBand />
     </>

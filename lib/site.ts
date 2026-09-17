@@ -116,6 +116,15 @@ export const brands: Brand[] = [
   { name: "Triumph-Adler", logo: "/imgs/brands/triumph-adler.png" },
   { name: "Ricoh", logo: "/imgs/brands/ricoh.png" },
   { name: "UTAX", logo: "/imgs/brands/utax.png" },
+  /* Software brands behind our managed IT, backup and security services.
+     No logo artwork on file yet, so these render as wordmark badges through
+     the same fallback as any hardware brand above — drop a PNG into
+     public/imgs/brands and add a `logo` key to upgrade any of them. */
+  { name: "Microsoft 365" },
+  { name: "Google Workspace" },
+  { name: "Fortinet" },
+  { name: "Veeam" },
+  { name: "Ubiquiti" },
 ];
 
 export const stats = [
@@ -138,3 +147,129 @@ export const navLinks = [
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact" },
 ] as const;
+
+/**
+ * The three rotating hero states on the home page. Layout and CTA position
+ * stay fixed; only the badge, headline, keyword line, description, image and
+ * CTA change, so the section reads as one company covering three fronts
+ * rather than three unrelated banners.
+ */
+export type HeroSlide = {
+  badge: string;
+  headline: string;
+  highlight: string;
+  keywords: string[];
+  description: string;
+  ctaLabel: string;
+  ctaHref: string;
+};
+
+export const heroSlides: HeroSlide[] = [
+  {
+    badge: "Printers & Copiers",
+    headline: "Every printer and copier need,",
+    highlight: "sorted in one call",
+    keywords: [
+      "Printers",
+      "Copiers",
+      "Scanners",
+      "Consumables",
+      "New & Refurbished",
+      "Repairs",
+      "AMC",
+      "Rentals",
+      "Leasing",
+    ],
+    description:
+      "Sales, rental, repair and consumables for every major printer and copier brand, backed by same-day service across the UAE.",
+    ctaLabel: "Explore Printer & Copier Solutions",
+    ctaHref: "/services#print-copier",
+  },
+  {
+    badge: "IT Hardware & Support",
+    headline: "IT hardware and support",
+    highlight: "that keeps pace with your team",
+    keywords: [
+      "Computers",
+      "Laptops",
+      "PC Components",
+      "Monitors",
+      "Storage & RAM",
+      "Networking",
+      "Custom PC Builds",
+      "IT Equipment",
+    ],
+    description:
+      "From a single laptop to a full office rollout, we supply, configure and support the hardware your business runs on.",
+    ctaLabel: "Explore IT Hardware & Support",
+    ctaHref: "/services#office-supplies",
+  },
+  {
+    badge: "Complete Business Solutions",
+    headline: "One partner for print, IT,",
+    highlight: "security and office supplies",
+    keywords: [
+      "Print & Copier",
+      "IT Infrastructure",
+      "Security & CCTV",
+      "Digital Services",
+      "Office Supplies",
+      "Rentals & AMC",
+    ],
+    description:
+      "20+ services across five areas of the business, on a single account, with one team you can actually reach.",
+    ctaLabel: "View All Services",
+    ctaHref: "/services",
+  },
+];
+
+/** Rental and contract options highlighted in the home page rental section. */
+export type RentalPlan = {
+  title: string;
+  description: string;
+  benefits: string[];
+  href: string;
+};
+
+export const rentalPlans: RentalPlan[] = [
+  {
+    title: "Short & long-term rental",
+    description:
+      "Daily, weekly, monthly or multi-year hire for events, project sites, seasonal peaks and offices that would rather not own hardware.",
+    benefits: ["No money up front", "Toner and servicing included", "Free replacement if a unit fails"],
+    href: "/services/printer-and-copier-rental",
+  },
+  {
+    title: "Annual maintenance contracts",
+    description:
+      "Scheduled servicing, priority breakdown response and parts cover across your whole print fleet, for one predictable annual cost.",
+    benefits: ["Same-day response for contract customers", "Fixed cost you can budget for", "Mixed-brand fleets on one contract"],
+    href: "/services/printer-amc",
+  },
+  {
+    title: "Leasing & FSMA",
+    description:
+      "Structured leasing and full-service maintenance agreements that bundle hardware, consumables and support into a single line item.",
+    benefits: ["Predictable monthly billing", "Hardware refreshed on schedule", "One invoice, one point of contact"],
+    href: "/contact",
+  },
+];
+
+/**
+ * "Our Trusted Clients" placeholder roster.
+ *
+ * The client asked for their own client logos to be dropped in here — see
+ * report §3.4. Until artwork arrives, these render as text wordmark badges
+ * through the same fallback `BrandGrid` already uses, so the section keeps
+ * its place on the page and only needs a `logo` path added per client later.
+ */
+export type Client = { name: string; logo?: string };
+
+export const trustedClients: Client[] = [
+  { name: "Client logo 1" },
+  { name: "Client logo 2" },
+  { name: "Client logo 3" },
+  { name: "Client logo 4" },
+  { name: "Client logo 5" },
+  { name: "Client logo 6" },
+];
