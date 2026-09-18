@@ -65,12 +65,36 @@
 }
 
 @layer utilities {
-  /* Subtle grid texture echoing the circuit-board artwork in the brochure. */
+  /*
+    Angled brand motif for the dark navy sections (hero, page headers, CTA
+    band, service ribbon). Takes its cue from the diagonal orange/blue
+    slashes in the company's own marketing artwork rather than any kind of
+    grid: a wide, gradient-faded light sweep, two hairlines and a single
+    thin slash in the brand orange (#ee6a24), repeating on a long 440px
+    cycle so the rhythm stays sparse behind foreground text. Built from a
+    gradient rather than a tiled image, so there is no seam to line up and
+    it stays crisp at any size.
+  */
   .bg-circuit {
-    background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-    background-size: 56px 56px;
+    background-image: repeating-linear-gradient(
+      118deg,
+      transparent 0px,
+      rgba(255, 255, 255, 0.075) 60px,
+      transparent 120px,
+      transparent 196px,
+      rgba(255, 255, 255, 0.1) 196px,
+      rgba(255, 255, 255, 0.1) 199px,
+      transparent 199px,
+      transparent 250px,
+      rgba(238, 106, 36, 0.32) 250px,
+      rgba(238, 106, 36, 0.32) 255px,
+      transparent 255px,
+      transparent 330px,
+      rgba(255, 255, 255, 0.07) 330px,
+      rgba(255, 255, 255, 0.07) 332px,
+      transparent 332px,
+      transparent 440px
+    );
   }
 
   /* Seamless horizontal scroller. Track holds two identical copies of its
