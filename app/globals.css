@@ -97,6 +97,73 @@
     );
   }
 
+  /*
+    Light-background twin of .bg-circuit, for the pale card sections on the
+    home page. Same angle and rhythm so the two read as one system, but the
+    slashes are drawn in the brand navy instead of white, at the much lower
+    alpha a near-white background needs.
+  */
+  .bg-circuit-light {
+    background-image: repeating-linear-gradient(
+      118deg,
+      transparent 0px,
+      rgba(20, 71, 155, 0.022) 60px,
+      transparent 120px,
+      transparent 196px,
+      rgba(20, 71, 155, 0.035) 196px,
+      rgba(20, 71, 155, 0.035) 199px,
+      transparent 199px,
+      transparent 250px,
+      rgba(238, 106, 36, 0.075) 250px,
+      rgba(238, 106, 36, 0.075) 255px,
+      transparent 255px,
+      transparent 330px,
+      rgba(20, 71, 155, 0.025) 330px,
+      rgba(20, 71, 155, 0.025) 332px,
+      transparent 332px,
+      transparent 440px
+    );
+  }
+
+  /*
+    Scroll-reveal states, driven by the `Reveal` client component, which
+    only adds `is-revealed` once the element first enters the viewport.
+    Kept in CSS so revealing costs no React re-render, and so the
+    reduced-motion and `<noscript>` overrides below have a single class to
+    pin visible.
+  */
+  .reveal-item {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity 0.7s ease-out,
+      transform 0.7s ease-out;
+  }
+
+  .reveal-item.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+
+  /*
+    Ambient drift for the blurred colour blobs behind a section. `alternate`
+    ping-pongs the keyframes, so the loop never jumps — there is no start
+    and end frame to line up.
+  */
+  .animate-drift {
+    animation: drift 20s ease-in-out infinite alternate;
+  }
+
+  .animate-drift-reverse {
+    animation: drift 28s ease-in-out infinite alternate-reverse;
+  }
+
+  /* Different vector and timing, so a second section using these glows
+     doesn't visibly move in lockstep with the first. */
+  .animate-drift-slow {
+    animation: drift-alt 34s ease-in-out infinite alternate;
+  }
+
   /* Seamless horizontal scroller. Track holds two identical copies of its
      content side by side; animating -50% loops without a visible seam. */
   .animate-marquee {
@@ -140,6 +207,24 @@
   }
 }
 
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(2.5rem, -1.75rem, 0) scale(1.12);
+  }
+}
+
+@keyframes drift-alt {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(-3rem, 1.5rem, 0) scale(0.94);
+  }
+}
+
 @keyframes slide-up {
   from {
     opacity: 0;
@@ -174,7 +259,16 @@
   }
 
   .animate-marquee,
-  .animate-marquee-reverse {
+  .animate-marquee-reverse,
+  .animate-drift,
+  .animate-drift-reverse,
+  .animate-drift-slow {
     animation: none !important;
+  }
+
+  /* Scroll-reveal wrappers must not be left stuck at opacity 0. */
+  .reveal-item {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

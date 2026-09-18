@@ -69,6 +69,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
+      <head>
+        {/* Scroll-reveal starts at opacity 0 and is switched on by JS. With
+            JS off nothing would ever switch it on, so pin those wrappers
+            visible rather than leaving whole sections blank. */}
+        <noscript>
+          <style>{`.reveal-item{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+      </head>
       <body className="flex min-h-full flex-col bg-white">
         <script
           type="application/ld+json"

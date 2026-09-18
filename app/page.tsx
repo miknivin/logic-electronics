@@ -1,13 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Clock, MapPin, Truck } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Clock,
+  MapPin,
+  MessageSquare,
+  Truck,
+} from "lucide-react";
 
 import whyChooseUsImage from "@/public/imgs/why-choose-us.jpg";
 import { BrandGrid } from "@/components/brand-grid";
 import { Container } from "@/components/container";
 import { CtaBand } from "@/components/cta-band";
 import { HeroSlider } from "@/components/hero-slider";
+import { QuoteButton } from "@/components/quote-button";
 import { RentalSection } from "@/components/rental-section";
+import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { ServiceCard } from "@/components/service-card";
 import { ServiceRibbon } from "@/components/service-ribbon";
@@ -85,8 +94,19 @@ export default function HomePage() {
       {/* Five areas of expertise now leads, ahead of the services grid
           (report §3.1), giving visitors the full shape of the business
           before drilling into individual services. */}
-      <section className="py-20 sm:py-24">
-        <Container>
+      <section className="relative overflow-hidden bg-circuit-light py-20 sm:py-24">
+        {/* Slow-drifting brand glows, so the section has some life behind
+            the cards without anything competing with the text. */}
+        <div
+          className="animate-drift pointer-events-none absolute -left-24 top-20 h-80 w-80 rounded-full bg-primary-200/35 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="animate-drift-reverse pointer-events-none absolute -right-20 bottom-8 h-72 w-72 rounded-full bg-secondary-200/35 blur-3xl"
+          aria-hidden="true"
+        />
+
+        <Container className="relative">
           <SectionHeading
             eyebrow="Five areas of expertise"
             title="Everything your business needs, from one partner"
@@ -94,35 +114,96 @@ export default function HomePage() {
           />
 
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {serviceCategories.map((category, index) => (
-              <Link
-                key={category.key}
-                href={`/services#${category.key}`}
-                className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-7 transition-all hover:border-primary-300 hover:shadow-lg"
-              >
-                <span className="text-5xl font-bold text-slate-100 transition-colors group-hover:text-secondary-100">
-                  {String(index + 1).padStart(2, "0")}
+            {serviceCategories.map((category, index) => {
+              const Icon = category.icon;
+
+              return (
+                <Reveal
+                  key={category.key}
+                  delayMs={index * 90}
+                  className="h-full"
+                >
+                  <Link
+                    href={`/services#${category.key}`}
+                    className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-7 transition-all duration-200 hover:-translate-y-1 hover:border-primary-300 hover:shadow-lg"
+                  >
+                    {/* Accent bar that wipes in from the left on hover. */}
+                    <span
+                      className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-secondary-500 transition-transform duration-300 group-hover:scale-x-100"
+                      aria-hidden="true"
+                    />
+                    <span
+                      className="absolute right-6 top-5 text-3xl font-bold text-slate-100 transition-colors group-hover:text-secondary-100"
+                      aria-hidden="true"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+
+                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary-50 text-primary-700 transition-colors group-hover:bg-primary-700 group-hover:text-white">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </span>
+
+                    <h3 className="mt-5 text-xl font-bold">{category.title}</h3>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-600">
+                      {category.description}
+                    </p>
+                    <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700">
+                      Browse services
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Link>
+                </Reveal>
+              );
+            })}
+
+            {/* Five categories in a three-column grid leaves an empty slot on
+                the last row, so it carries a quote CTA rather than a hole. */}
+            <Reveal delayMs={serviceCategories.length * 90} className="h-full">
+              <QuoteButton className="group flex h-full w-full flex-col rounded-xl bg-secondary-500 p-7 text-left text-white shadow-lg shadow-secondary-900/10 transition-all duration-200 hover:-translate-y-1 hover:bg-secondary-600 hover:shadow-xl">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white/15">
+                  <MessageSquare className="h-6 w-6" aria-hidden="true" />
                 </span>
-                <h3 className="mt-3 text-xl font-bold">{category.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  {category.description}
-                </p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700">
-                  Browse services
+                <span className="mt-5 block text-xl font-bold">
+                  Not sure which you need?
+                </span>
+                <span className="mt-3 block flex-1 text-sm leading-relaxed text-white/85">
+                  Tell us what is not working and we will point you at the right
+                  team, with a clear quote before any work starts.
+                </span>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold">
+                  Request a Quote
                   <ArrowRight
                     className="h-4 w-4 transition-transform group-hover:translate-x-1"
                     aria-hidden="true"
                   />
                 </span>
-              </Link>
-            ))}
+              </QuoteButton>
+            </Reveal>
           </div>
         </Container>
       </section>
 
       {/* -------------------------------------------------------- services */}
-      <section className="bg-slate-50 py-20 sm:py-24">
-        <Container>
+      <section className="relative overflow-hidden bg-linear-to-b from-white via-slate-50 to-primary-50/50 py-20 sm:py-24">
+        {/* Same ambient treatment as the section above, on a different
+            vector and a slower cycle so the two don't drift in lockstep. */}
+        <div
+          className="animate-drift-slow pointer-events-none absolute -right-12 top-4 h-96 w-96 rounded-full bg-primary-300/45 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="animate-drift pointer-events-none absolute -left-16 bottom-0 h-88 w-88 rounded-full bg-secondary-300/40 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="animate-drift-reverse pointer-events-none absolute left-1/3 top-1/2 h-72 w-72 rounded-full bg-primary-200/40 blur-3xl"
+          aria-hidden="true"
+        />
+
+        <Container className="relative">
           <SectionHeading
             eyebrow="What we do"
             title="Services built around how your office actually works"
@@ -130,8 +211,14 @@ export default function HomePage() {
           />
 
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredServices.map((service) => (
-              <ServiceCard key={service.slug} service={service} />
+            {featuredServices.map((service, index) => (
+              <Reveal
+                key={service.slug}
+                delayMs={(index % 4) * 90}
+                className="h-full"
+              >
+                <ServiceCard service={service} />
+              </Reveal>
             ))}
           </div>
 

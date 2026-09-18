@@ -29,7 +29,14 @@ export default function ServicesPage() {
       {/* Category quick-nav */}
       <section className="border-b border-slate-200 bg-slate-50">
         <Container>
-          <ServiceCategoryNav categories={serviceCategories} />
+          {/* Only key/title cross the boundary — `icon` is a component and
+              is not serialisable from a server component. */}
+          <ServiceCategoryNav
+            categories={serviceCategories.map(({ key, title }) => ({
+              key,
+              title,
+            }))}
+          />
         </Container>
       </section>
 

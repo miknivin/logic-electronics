@@ -26,6 +26,9 @@ export type ServiceCategory = {
   key: string;
   title: string;
   description: string;
+  /** Shown on the home page category cards, and anywhere else a category
+   *  needs a glyph, so the icon is defined once rather than per component. */
+  icon: LucideIcon;
 };
 
 export type Service = {
@@ -51,30 +54,35 @@ export const serviceCategories: ServiceCategory[] = [
     title: "Printing & Copier Solutions",
     description:
       "Sales, rental, repair and consumables for every major copier and printer brand in the UAE.",
+    icon: Printer,
   },
   {
     key: "it-infrastructure",
     title: "IT Infrastructure & Support",
     description:
       "Managed IT, datacenter, networking, security and backup services that keep your business running.",
+    icon: Cpu,
   },
   {
     key: "security-communication",
     title: "Security & Communication",
     description:
       "CCTV, access control and unified communication systems for offices and facilities.",
+    icon: Cctv,
   },
   {
     key: "digital",
     title: "Digital Solutions",
     description:
       "Websites, digital marketing and design that put your business in front of the right customers.",
+    icon: Globe,
   },
   {
     key: "office-supplies",
     title: "Office Supplies & Equipment",
     description:
       "Stationery, electronics and genuine spare parts delivered to your door across the Emirates.",
+    icon: ShoppingBag,
   },
 ];
 

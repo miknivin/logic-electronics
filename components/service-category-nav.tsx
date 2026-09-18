@@ -2,10 +2,16 @@
 
 import { useEffect, useState } from "react";
 
-import type { ServiceCategory } from "@/lib/services";
+/**
+ * Only the serialisable fields of a `ServiceCategory`. The full type carries
+ * an `icon` component, and React components cannot be passed from a server
+ * component across to a client one — so the page hands over just what the
+ * pills actually render.
+ */
+type NavCategory = { key: string; title: string };
 
 type ServiceCategoryNavProps = {
-  categories: ServiceCategory[];
+  categories: NavCategory[];
 };
 
 /**
