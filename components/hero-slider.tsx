@@ -15,8 +15,9 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import heroImage from "@/public/imgs/logic-banner-img.jpg";
-import whyChooseUsImage from "@/public/imgs/why-choose-us.jpg";
+import printCopierPhoto from "@/public/imgs/hero/1.webp";
+import itHardwarePhoto from "@/public/imgs/hero/2.webp";
+import serviceTechnicianPhoto from "@/public/imgs/hero/3.webp";
 import { heroSlides } from "@/lib/site";
 
 const SLIDE_DURATION_MS = 6000;
@@ -24,16 +25,16 @@ const SLIDE_DURATION_MS = 6000;
 /** Image shown behind each of the three rotating states, in order. */
 const slideImages: { src: StaticImageData; alt: string }[] = [
   {
-    src: heroImage,
-    alt: "An office professional collecting documents from a multifunction printer",
+    src: printCopierPhoto,
+    alt: "A Logic Electronics staff member serving a customer at the printer and copier counter, with the print, copy, scan and manage services signage behind her",
   },
   {
-    src: whyChooseUsImage,
-    alt: "A member of staff checking a job on a tablet beside an office printer",
+    src: itHardwarePhoto,
+    alt: "Logic Electronics IT engineers working on hardware and network support at a workstation",
   },
   {
-    src: heroImage,
-    alt: "Logic Electronics covers print, IT, security and office supplies",
+    src: serviceTechnicianPhoto,
+    alt: "A Logic Electronics technician servicing a copier's toner and imaging unit, under the 'keep your business printing' signage",
   },
 ];
 

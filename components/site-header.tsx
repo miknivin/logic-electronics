@@ -7,14 +7,15 @@ import {
   ArrowRight,
   Cctv,
   ChevronDown,
-  Cpu,
   Globe,
   Mail,
   Menu,
   Phone,
   Printer,
   Repeat,
+  Server,
   ShoppingBag,
+  Wrench,
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -22,17 +23,111 @@ import type { LucideIcon } from "lucide-react";
 import { Container } from "@/components/container";
 import { Logo } from "@/components/logo";
 import { QuoteButton } from "@/components/quote-button";
-import { getServicesByCategory, serviceCategories } from "@/lib/services";
+import { getService, type Service } from "@/lib/services";
 import { contact, rentalPlans } from "@/lib/site";
 
-/** Small glyph per service category, so each mega-menu column reads at a glance. */
-const categoryIcons: Record<string, LucideIcon> = {
-  "print-copier": Printer,
-  "it-infrastructure": Cpu,
-  "security-communication": Cctv,
-  digital: Globe,
-  "office-supplies": ShoppingBag,
+/**
+ * Report §1 asked for four separate top-level items — Products, Services,
+ * Solutions, Rentals — each with its own categorised mega menu, mirroring
+ * the reference site's "Security / Infrastructure / Development / Cloud
+ * Solutions" style. The site's data model only has one flat list of 21
+ * services grouped into 5 categories (see lib/services.ts), not that
+ * four-way split, so the grouping below is a navigation-only regrouping of
+ * the same real services — nothing here is invented copy, and the
+ * underlying /services page and service detail pages are unchanged.
+ */
+type MegaMenuColumn = { title: string; icon: LucideIcon; slugs: string[] };
+type MegaMenuDef = {
+  key: string;
+  label: string;
+  href?: string;
+  columns: MegaMenuColumn[];
+  footerNote: string;
 };
+
+const megaMenus: MegaMenuDef[] = [
+  {
+    key: "products",
+    label: "Products",
+    columns: [
+      {
+        title: "Printers & Copiers",
+        icon: Printer,
+        slugs: [
+          "printer-sales-and-repair",
+          "copier-sales-and-service",
+          "refurbished-printers",
+          "toner-and-cartridges",
+        ],
+      },
+      {
+        title: "Computers & Supplies",
+        icon: ShoppingBag,
+        slugs: [
+          "computers-and-electronics",
+          "genuine-spare-parts",
+          "office-stationery",
+        ],
+      },
+    ],
+    footerNote:
+      "New, refurbished and rental hardware, plus consumables for every brand we service.",
+  },
+  {
+    key: "services",
+    label: "Services",
+    href: "/services",
+    columns: [
+      {
+        title: "Support & Maintenance",
+        icon: Wrench,
+        slugs: ["printer-amc", "managed-it-services", "business-email-solutions"],
+      },
+      {
+        title: "Digital Services",
+        icon: Globe,
+        slugs: [
+          "website-design-and-development",
+          "digital-marketing",
+          "graphic-design-and-printing",
+        ],
+      },
+    ],
+    footerNote: "AMC, IT support and digital services, delivered by our own engineers.",
+  },
+  {
+    key: "solutions",
+    label: "Solutions",
+    columns: [
+      {
+        title: "Security & Surveillance",
+        icon: Cctv,
+        slugs: [
+          "cctv-surveillance",
+          "communication-and-lv-systems",
+          "cybersecurity-services",
+        ],
+      },
+      {
+        title: "Infrastructure & Data",
+        icon: Server,
+        slugs: [
+          "networking-and-switching",
+          "datacenter-solutions",
+          "data-backup-and-protection",
+        ],
+      },
+    ],
+    footerNote:
+      "Security, networking and data protection systems, designed and installed end to end.",
+  },
+];
+
+function resolveServices(slugs: string[]): Service[] {
+  return slugs
+    .map((slug) => getService(slug))
+    .filter((service): service is Service => Boolean(service));
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -99,7 +194,8 @@ export function SiteHeader() {
             <Logo priority />
           </div>
 
-          {/* Centre-aligned links, with mega menus for Services and Rentals. */}
+          {/* Centre-aligned links: Home, About, then a mega menu per item
+              below, then Contact — matching the report's requested order. */}
           <div className="hidden shrink-0 items-center justify-center gap-1 lg:flex">
             <Link
               href="/"
@@ -124,75 +220,82 @@ export function SiteHeader() {
               About
             </Link>
 
-            {/* Services mega menu */}
-            <div className="group relative">
-              <Link
-                href="/services"
-                aria-current={isActive("/services") ? "page" : undefined}
-                className={`inline-flex items-center gap-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
-                  isActive("/services")
-                    ? "text-primary-700"
-                    : "text-slate-600 hover:text-primary-700"
-                }`}
-              >
-                Services
-                <ChevronDown
-                  className="h-3.5 w-3.5 transition-transform group-hover:rotate-180"
-                  aria-hidden="true"
-                />
-              </Link>
+            {megaMenus.map((menu) => (
+              <div key={menu.key} className="group relative">
+                {menu.href ? (
+                  <Link
+                    href={menu.href}
+                    aria-current={isActive(menu.href) ? "page" : undefined}
+                    className={`inline-flex items-center gap-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
+                      isActive(menu.href)
+                        ? "text-primary-700"
+                        : "text-slate-600 hover:text-primary-700"
+                    }`}
+                  >
+                    {menu.label}
+                    <ChevronDown
+                      className="h-3.5 w-3.5 transition-transform group-hover:rotate-180"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1 rounded-md px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:text-primary-700"
+                  >
+                    {menu.label}
+                    <ChevronDown
+                      className="h-3.5 w-3.5 transition-transform group-hover:rotate-180"
+                      aria-hidden="true"
+                    />
+                  </button>
+                )}
 
-              <div className="invisible absolute left-1/2 top-full z-40 w-screen max-w-5xl -translate-x-1/2 translate-y-1 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-2 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100">
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl ring-1 ring-black/5">
-                  <div className="grid grid-cols-5 gap-6 p-8">
-                    {serviceCategories.map((category) => {
-                      const Icon = categoryIcons[category.key] ?? Printer;
-                      const categoryServices = getServicesByCategory(
-                        category.key,
-                      ).slice(0, 6);
+                <div className="invisible absolute left-1/2 top-full z-40 w-screen max-w-2xl -translate-x-1/2 translate-y-1 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-2 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100">
+                  <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl ring-1 ring-black/5">
+                    <div className="grid grid-cols-2 gap-8 p-8">
+                      {menu.columns.map((column) => {
+                        const Icon = column.icon;
+                        const services = resolveServices(column.slugs);
 
-                      return (
-                        <div key={category.key}>
-                          <Link
-                            href={`/services#${category.key}`}
-                            className="group/col inline-flex items-center gap-2 text-sm font-bold text-primary-950 transition-colors hover:text-primary-700"
-                          >
-                            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary-50 text-primary-700 transition-colors group-hover/col:bg-primary-700 group-hover/col:text-white">
-                              <Icon className="h-4 w-4" aria-hidden="true" />
-                            </span>
-                            {category.title}
-                          </Link>
-                          <ul className="mt-4 space-y-2.5">
-                            {categoryServices.map((service) => (
-                              <li key={service.slug}>
-                                <Link
-                                  href={`/services/${service.slug}`}
-                                  className="text-sm text-slate-600 transition-colors hover:text-secondary-600"
-                                >
-                                  {service.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="flex items-center justify-between gap-4 border-t border-slate-100 bg-slate-50 px-8 py-4">
-                    <p className="text-sm text-slate-600">
-                      20+ services across five areas of the business.
-                    </p>
-                    <Link
-                      href="/services"
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700 hover:text-secondary-600"
-                    >
-                      View all services
-                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </Link>
+                        return (
+                          <div key={column.title}>
+                            <p className="inline-flex items-center gap-2 text-sm font-bold text-primary-950">
+                              <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+                                <Icon className="h-4 w-4" aria-hidden="true" />
+                              </span>
+                              {column.title}
+                            </p>
+                            <ul className="mt-4 space-y-2.5">
+                              {services.map((service) => (
+                                <li key={service.slug}>
+                                  <Link
+                                    href={`/services/${service.slug}`}
+                                    className="text-sm text-slate-600 transition-colors hover:text-secondary-600"
+                                  >
+                                    {service.title}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="flex items-center justify-between gap-4 border-t border-slate-100 bg-slate-50 px-8 py-4">
+                      <p className="text-sm text-slate-600">{menu.footerNote}</p>
+                      <Link
+                        href="/services"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700 hover:text-secondary-600"
+                      >
+                        View all services
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
 
             {/* Rentals mega menu */}
             <div className="group relative">
@@ -318,49 +421,50 @@ export function SiteHeader() {
                 About
               </Link>
 
-              {/* Services accordion */}
-              <div className="rounded-md">
-                <div className="flex items-center justify-between">
-                  <Link
-                    href="/services"
-                    onClick={closeMenu}
-                    className={`flex-1 rounded-md px-3 py-3 text-base font-semibold transition-colors ${
-                      isActive("/services")
-                        ? "bg-primary-50 text-primary-700"
-                        : "text-slate-700 hover:bg-slate-50"
-                    }`}
-                  >
-                    Services
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => toggleMobileGroup("services")}
-                    aria-expanded={openMobileGroup === "services"}
-                    className="rounded-md p-3 text-slate-500 hover:bg-slate-50"
-                  >
-                    <ChevronDown
-                      className={`h-5 w-5 transition-transform ${
-                        openMobileGroup === "services" ? "rotate-180" : ""
-                      }`}
-                      aria-hidden="true"
-                    />
-                    <span className="sr-only">Toggle services list</span>
-                  </button>
-                </div>
-                {openMobileGroup === "services" ? (
-                  <div className="ml-3 flex flex-col gap-4 border-l border-slate-200 py-2 pl-4">
-                    {serviceCategories.map((category) => (
-                      <div key={category.key}>
-                        <Link
-                          href={`/services#${category.key}`}
-                          onClick={closeMenu}
-                          className="text-sm font-bold text-primary-950"
-                        >
-                          {category.title}
-                        </Link>
-                        <ul className="mt-2 space-y-2">
-                          {getServicesByCategory(category.key).map(
-                            (service) => (
+              {megaMenus.map((menu) => (
+                <div key={menu.key} className="rounded-md">
+                  <div className="flex items-center justify-between">
+                    {menu.href ? (
+                      <Link
+                        href={menu.href}
+                        onClick={closeMenu}
+                        className={`flex-1 rounded-md px-3 py-3 text-base font-semibold transition-colors ${
+                          isActive(menu.href)
+                            ? "bg-primary-50 text-primary-700"
+                            : "text-slate-700 hover:bg-slate-50"
+                        }`}
+                      >
+                        {menu.label}
+                      </Link>
+                    ) : (
+                      <span className="flex-1 px-3 py-3 text-base font-semibold text-slate-700">
+                        {menu.label}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => toggleMobileGroup(menu.key)}
+                      aria-expanded={openMobileGroup === menu.key}
+                      className="rounded-md p-3 text-slate-500 hover:bg-slate-50"
+                    >
+                      <ChevronDown
+                        className={`h-5 w-5 transition-transform ${
+                          openMobileGroup === menu.key ? "rotate-180" : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">Toggle {menu.label} list</span>
+                    </button>
+                  </div>
+                  {openMobileGroup === menu.key ? (
+                    <div className="ml-3 flex flex-col gap-4 border-l border-slate-200 py-2 pl-4">
+                      {menu.columns.map((column) => (
+                        <div key={column.title}>
+                          <p className="text-sm font-bold text-primary-950">
+                            {column.title}
+                          </p>
+                          <ul className="mt-2 space-y-2">
+                            {resolveServices(column.slugs).map((service) => (
                               <li key={service.slug}>
                                 <Link
                                   href={`/services/${service.slug}`}
@@ -370,14 +474,14 @@ export function SiteHeader() {
                                   {service.title}
                                 </Link>
                               </li>
-                            ),
-                          )}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              ))}
 
               {/* Rentals accordion */}
               <div className="rounded-md">

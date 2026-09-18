@@ -56,6 +56,10 @@ export default function ContactPage() {
         breadcrumbs={[{ label: "Contact" }]}
         title="Let's talk about what your office needs"
         description="Send us the details and we'll come back with a clear quote. For urgent breakdowns, call or WhatsApp us directly."
+        image={{
+          src: "/imgs/contact/team.jpg",
+          alt: "A Logic Electronics team member ready to help with your enquiry",
+        }}
       />
 
       {/* ------------------------------------------------- quick contacts */}

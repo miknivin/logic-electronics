@@ -55,6 +55,10 @@ export default function AboutPage() {
         breadcrumbs={[{ label: "About" }]}
         title="A trusted service partner in the UAE since 2000"
         description={`${site.legalName} is an ISO 9001:2015 certified electronics service centre and office supplier, working with multinational, medium and small-scale organisations.`}
+        image={{
+          src: "/imgs/about/team.jpg",
+          alt: "The Logic Electronics team at work in Abu Dhabi",
+        }}
       />
 
       {/* ---------------------------------------------------------- story */}

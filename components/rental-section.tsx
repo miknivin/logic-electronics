@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, Repeat } from "lucide-react";
 
+import technicianPhoto from "@/public/imgs/hero/3.webp";
 import { Container } from "@/components/container";
 import { Marquee } from "@/components/marquee";
 import { SectionHeading } from "@/components/section-heading";
@@ -36,12 +37,38 @@ export function RentalSection() {
   return (
     <section className="border-y border-slate-200 bg-primary-950 py-20 sm:py-24">
       <Container>
-        <SectionHeading
-          inverted
-          eyebrow="Printers & Copiers on Your Terms"
-          title="Rent, lease or put it on AMC — we keep it running"
-          description="No capital outlay, no surprise repair bills. Toner, servicing and breakdown cover all sit inside one predictable monthly cost."
-        />
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-7">
+            <SectionHeading
+              align="left"
+              inverted
+              eyebrow="Printers & Copiers on Your Terms"
+              title="Rent, lease or put it on AMC — we keep it running"
+              description="No capital outlay, no surprise repair bills. Toner, servicing and breakdown cover all sit inside one predictable monthly cost."
+            />
+          </div>
+
+          {/* A real Logic Electronics technician servicing a copier, backing
+              up the "we keep it running" promise with an actual photo
+              instead of just the ribbon of brand logos below. */}
+          <div className="lg:col-span-5">
+            <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
+              <span
+                className="absolute -right-4 -top-4 h-24 w-24 rounded-2xl bg-secondary-500 sm:-right-5 sm:-top-5 sm:h-28 sm:w-28"
+                aria-hidden="true"
+              />
+              <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/15">
+                <Image
+                  src={technicianPhoto}
+                  alt="A Logic Electronics technician servicing a copier's toner and imaging unit on site"
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 34rem, (min-width: 640px) 24rem, 100vw"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </Container>
 
       {/* One-line ribbon gallery of rental units. */}

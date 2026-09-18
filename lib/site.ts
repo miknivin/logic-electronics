@@ -205,9 +205,9 @@ export const heroSlides: HeroSlide[] = [
     ctaHref: "/services#office-supplies",
   },
   {
-    badge: "Complete Business Solutions",
-    headline: "One partner for print, IT,",
-    highlight: "security and office supplies",
+    badge: "Service & Support",
+    headline: "Every product we sell,",
+    highlight: "backed by real engineers",
     keywords: [
       "Print & Copier",
       "IT Infrastructure",
@@ -217,7 +217,7 @@ export const heroSlides: HeroSlide[] = [
       "Rentals & AMC",
     ],
     description:
-      "20+ services across five areas of the business, on a single account, with one team you can actually reach.",
+      "Repairs, scheduled maintenance and AMC cover delivered by our own team, on everything from a single printer to your full IT and security setup.",
     ctaLabel: "View All Services",
     ctaHref: "/services",
   },
@@ -256,20 +256,42 @@ export const rentalPlans: RentalPlan[] = [
 ];
 
 /**
- * "Our Trusted Clients" placeholder roster.
+ * "Our Trusted Clients" roster (report §3.4).
  *
- * The client asked for their own client logos to be dropped in here — see
- * report §3.4. Until artwork arrives, these render as text wordmark badges
- * through the same fallback `BrandGrid` already uses, so the section keeps
- * its place on the page and only needs a `logo` path added per client later.
+ * Source files supplied in `public/imgs/clients-logos` arrived at wildly
+ * different sizes and aspect ratios — some with huge blank margins (the
+ * actual ADRC mark was a small logo lost in a 1400x204 canvas), and two
+ * (`dark: true` below) are white artwork meant for a dark background, which
+ * would be invisible on a plain white tile. Both problems are fixed once,
+ * here, rather than in the component:
+ *   1. Every logo was trimmed to its real content with sharp and re-saved
+ *      into `public/imgs/clients/<slug>.png`, so no tile shows dead space.
+ *   2. `width`/`height` are the trimmed file's real pixel dimensions, so
+ *      `TrustedClients` can scale each logo to fit its tile via
+ *      `object-contain` without distorting or cropping any of them,
+ *      whatever the aspect ratio.
+ *   3. `dark` flags the two logos (Abu Dhabi Refreshments Co. and NSCC
+ *      International) that need the dark tile variant to stay legible.
  */
-export type Client = { name: string; logo?: string };
+export type Client = {
+  name: string;
+  logo: string;
+  width: number;
+  height: number;
+  dark?: boolean;
+};
 
 export const trustedClients: Client[] = [
-  { name: "Client logo 1" },
-  { name: "Client logo 2" },
-  { name: "Client logo 3" },
-  { name: "Client logo 4" },
-  { name: "Client logo 5" },
-  { name: "Client logo 6" },
+  { name: "Nael & Bin Harmal Hydroexport", logo: "/imgs/clients/nbhh.png", width: 1008, height: 184 },
+  { name: "Abu Dhabi Refreshments Co.", logo: "/imgs/clients/adrc.png", width: 1366, height: 200, dark: true },
+  { name: "Everest", logo: "/imgs/clients/everest.png", width: 256, height: 395 },
+  { name: "Al Jawdah Domestic Workers Services", logo: "/imgs/clients/al-jawdah.png", width: 844, height: 843 },
+  { name: "GreenLine", logo: "/imgs/clients/greenline.png", width: 884, height: 237 },
+  { name: "Trojan Construction Holding", logo: "/imgs/clients/trojan.png", width: 698, height: 176 },
+  { name: "NSCC International", logo: "/imgs/clients/nscc-international.png", width: 350, height: 96, dark: true },
+  { name: "Hamad Bin Jarwan Advocates & Legal Consultants", logo: "/imgs/clients/hamad-bin-jarwan.png", width: 687, height: 153 },
+  { name: "Al Jaber", logo: "/imgs/clients/al-jaber.png", width: 400, height: 130 },
+  { name: "Mohammed Rasool Khoory & Sons", logo: "/imgs/clients/mrk.png", width: 250, height: 49 },
+  { name: "Al Diyar General Contracting Co", logo: "/imgs/clients/al-diyar.png", width: 276, height: 101 },
+  { name: "ZCAA", logo: "/imgs/clients/zcaa.png", width: 1263, height: 218 },
 ];
