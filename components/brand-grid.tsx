@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { Marquee } from "@/components/marquee";
-import { brands } from "@/lib/site";
+import { brands as allBrands, type Brand } from "@/lib/site";
 
 /**
  * Logo wall for the brands and software platforms we supply and service.
@@ -14,7 +14,11 @@ import { brands } from "@/lib/site";
  * Source files are a uniform 336x96 canvas, so each renders into a matching
  * 3.5:1 box and the whole row lines up.
  */
-export function BrandGrid() {
+export function BrandGrid({ items }: { items?: Brand[] } = {}) {
+  /* Defaults to the full roster; pages pass a subset when only certain
+     brands are relevant to what that page is about (report §4.1). */
+  const brands = items ?? allBrands;
+
   return (
     <Marquee durationSeconds={34}>
       {brands.map((brand) => (

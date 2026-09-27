@@ -76,6 +76,12 @@
     it stays crisp at any size.
   */
   .bg-circuit {
+    /* Anchored to the viewport rather than each section's own box, so the
+       slashes line up as one continuous run down the page instead of
+       restarting at every section boundary. Desktop only: iOS Safari
+       handles fixed attachment badly, and there the pattern simply falls
+       back to per-section, which still looks fine. */
+    background-attachment: fixed;
     background-image: repeating-linear-gradient(
       118deg,
       transparent 0px,
@@ -104,6 +110,9 @@
     alpha a near-white background needs.
   */
   .bg-circuit-light {
+    /* Shares .bg-circuit's viewport anchoring, so the light sections'
+       slashes continue the dark sections' lines rather than restarting. */
+    background-attachment: fixed;
     background-image: repeating-linear-gradient(
       118deg,
       transparent 0px,
@@ -186,6 +195,17 @@
 
   .animate-fade-in {
     animation: fade-in 0.6s ease-out both;
+  }
+}
+
+/* Fixed attachment is janky-to-broken on mobile Safari, so below the
+   desktop breakpoint the slash pattern scrolls with its section as before.
+   Continuity across sections is a nicety, not something worth a scroll
+   glitch on a phone. */
+@media (max-width: 1023px) {
+  .bg-circuit,
+  .bg-circuit-light {
+    background-attachment: scroll;
   }
 }
 

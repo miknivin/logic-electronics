@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Check, Phone } from "lucide-react";
 
+import { BrandGrid } from "@/components/brand-grid";
 import { Container } from "@/components/container";
 import { CtaBand } from "@/components/cta-band";
 import { PageHeader } from "@/components/page-header";
@@ -14,7 +15,7 @@ import {
   getServicesByCategory,
   services,
 } from "@/lib/services";
-import { contact, site } from "@/lib/site";
+import { brandsForServiceCategory, contact, site } from "@/lib/site";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -231,6 +232,18 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           </Container>
         </section>
       ) : null}
+
+      {/* Report item 10 / §4.1: the brands relevant to this service. */}
+      <section className="border-y border-slate-200 bg-slate-50 py-14">
+        <Container>
+          <p className="text-center text-sm font-bold uppercase tracking-[0.18em] text-slate-500">
+            Brands we supply and service
+          </p>
+        </Container>
+        <div className="mt-8">
+          <BrandGrid items={brandsForServiceCategory(service.category)} />
+        </div>
+      </section>
 
       <CtaBand />
     </>

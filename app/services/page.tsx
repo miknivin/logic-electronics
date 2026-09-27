@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { BrandGrid } from "@/components/brand-grid";
 import { Container } from "@/components/container";
 import { CtaBand } from "@/components/cta-band";
 import { PageHeader } from "@/components/page-header";
@@ -80,6 +81,18 @@ export default function ServicesPage() {
           </section>
         );
       })}
+
+      {/* Report item 10 / §4.1: brand logos at the foot of the services page. */}
+      <section className="border-y border-slate-200 bg-slate-50 py-14">
+        <Container>
+          <p className="text-center text-sm font-bold uppercase tracking-[0.18em] text-slate-500">
+            Brands we supply and service
+          </p>
+        </Container>
+        <div className="mt-8">
+          <BrandGrid />
+        </div>
+      </section>
 
       <CtaBand
         title="Not sure which service you need?"

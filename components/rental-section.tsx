@@ -2,34 +2,34 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, Repeat } from "lucide-react";
 
-import technicianPhoto from "@/public/imgs/hero/3.webp";
+import rentalPhoto from "@/public/imgs/rental.webp";
 import { Container } from "@/components/container";
 import { Marquee } from "@/components/marquee";
 import { SectionHeading } from "@/components/section-heading";
-import { rentalPlans } from "@/lib/site";
+import { getProductsByCategory, productImage } from "@/lib/products";
+import { brands, rentalPlans } from "@/lib/site";
 
 /**
- * Rental/AMC product cards for the ribbon gallery. Real product photography
- * for every rental unit was not supplied with the brief, so each card pairs
- * the brand's own logo (already on file for the brand grid) with the rental
- * status badge you'd see on a listing — swap in unit photos here later
- * without touching the rest of the section.
+ * The ribbon now runs off the real rental catalogue (lib/products.ts) rather
+ * than a hardcoded list of brand tiles, so it shows actual machines —
+ * brand, model and rental badge — the way the client's reference does.
+ *
+ * Still outstanding: machine photography. No product shots were supplied,
+ * so each card falls back to the brand's logo. Setting `image` on a rental
+ * product in lib/products.ts switches that card to a real photo with no
+ * change here.
  */
-const rentalUnits = [
-  { brand: "Konica Minolta", logo: "/imgs/brands/konica-minolta.png", badge: "For Rent" },
-  { brand: "Canon", logo: "/imgs/brands/canon.png", badge: "New & Refurbished" },
-  { brand: "Kyocera", logo: "/imgs/brands/kyocera.png", badge: "For Rent" },
-  { brand: "Ricoh", logo: "/imgs/brands/ricoh.png", badge: "AMC Available" },
-  { brand: "HP", logo: "/imgs/brands/hp.png", badge: "For Rent" },
-  { brand: "Sharp", logo: "/imgs/brands/sharp.png", badge: "New & Refurbished" },
-  { brand: "UTAX", logo: "/imgs/brands/utax.png", badge: "AMC Available" },
-  { brand: "Triumph-Adler", logo: "/imgs/brands/triumph-adler.png", badge: "For Rent" },
-];
+const rentalUnits = getProductsByCategory("rental").slice(0, 10);
+
+const brandLogos = Object.fromEntries(
+  brands.filter((b) => b.logo).map((b) => [b.name, b.logo as string]),
+);
 
 const badgeStyles: Record<string, string> = {
   "For Rent": "bg-secondary-500 text-white",
-  "New & Refurbished": "bg-primary-700 text-white",
-  "AMC Available": "bg-slate-900 text-white",
+  New: "bg-primary-700 text-white",
+  Refurbished: "bg-emerald-600 text-white",
+  Featured: "bg-slate-900 text-white",
 };
 
 /** Rental and AMC section for the home page, placed below "What we do". */
@@ -59,8 +59,8 @@ export function RentalSection() {
               />
               <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/15">
                 <Image
-                  src={technicianPhoto}
-                  alt="A Logic Electronics technician servicing a copier's toner and imaging unit on site"
+                  src={rentalPhoto}
+                  alt="A Logic Electronics engineer handing over a multifunction copier to a client in an Abu Dhabi office"
                   placeholder="blur"
                   sizes="(min-width: 1024px) 34rem, (min-width: 640px) 24rem, 100vw"
                   className="h-full w-full object-cover"
@@ -73,35 +73,48 @@ export function RentalSection() {
 
       {/* One-line ribbon gallery of rental units. */}
       <div className="mt-12">
-        <Marquee durationSeconds={32}>
-          {rentalUnits.map((unit, unitIndex) => (
-            <div
-              key={`${unit.brand}-${unitIndex}`}
-              className="mx-3 flex w-48 shrink-0 flex-col overflow-hidden rounded-xl bg-white shadow-lg"
+        <Marquee durationSeconds={36}>
+          {rentalUnits.map((unit) => (
+            <Link
+              key={unit.slug}
+              href="/products/rental"
+              className="group mx-3 flex w-52 shrink-0 flex-col overflow-hidden rounded-xl bg-white shadow-lg transition-transform duration-200 hover:-translate-y-1"
             >
-              <div className="relative flex h-28 items-center justify-center bg-slate-50 px-6">
+              <div className="relative flex h-28 items-center justify-center bg-white px-6">
                 <span
-                  className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${badgeStyles[unit.badge]}`}
+                  className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
+                    badgeStyles[unit.badges[0]] ?? "bg-slate-900 text-white"
+                  }`}
                 >
-                  {unit.badge}
+                  {unit.badges[0]}
                 </span>
                 <Image
-                  src={unit.logo}
-                  alt={unit.brand}
-                  width={120}
-                  height={48}
-                  className="h-8 w-auto opacity-90"
+                  src={productImage(unit)}
+                  alt={`${unit.brand} ${unit.name}`}
+                  fill
+                  sizes="208px"
+                  className="object-contain p-3"
                 />
+                {brandLogos[unit.brand] ? (
+                  <Image
+                    src={brandLogos[unit.brand]}
+                    alt={unit.brand}
+                    width={120}
+                    height={48}
+                    className="absolute bottom-2 right-3 h-4 w-auto opacity-70"
+                  />
+                ) : null}
               </div>
               <div className="p-4">
-                <p className="text-sm font-bold text-primary-950">
+                <p className="text-xs font-bold uppercase tracking-wide text-secondary-600">
                   {unit.brand}
                 </p>
-                <p className="mt-0.5 text-xs text-slate-500">
-                  Printer &amp; Copier Rental
+                <p className="mt-1 text-sm font-bold text-primary-950">
+                  {unit.name}
                 </p>
+                <p className="mt-0.5 text-xs text-slate-500">{unit.blurb}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </Marquee>
       </div>

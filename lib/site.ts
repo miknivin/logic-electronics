@@ -117,15 +117,56 @@ export const brands: Brand[] = [
   { name: "Ricoh", logo: "/imgs/brands/ricoh.png" },
   { name: "UTAX", logo: "/imgs/brands/utax.png" },
   /* Software brands behind our managed IT, backup and security services.
-     No logo artwork on file yet, so these render as wordmark badges through
-     the same fallback as any hardware brand above — drop a PNG into
-     public/imgs/brands and add a `logo` key to upgrade any of them. */
-  { name: "Microsoft 365" },
-  { name: "Google Workspace" },
-  { name: "Fortinet" },
-  { name: "Veeam" },
-  { name: "Ubiquiti" },
+     Artwork normalised onto the same 336x96 canvas as the hardware logos by
+     scripts/normalise-brand-logos.js. */
+  { name: "Microsoft 365", logo: "/imgs/brands/microsoft-365.png" },
+  { name: "Google Workspace", logo: "/imgs/brands/google-workspace.png" },
+  { name: "Fortinet", logo: "/imgs/brands/fortinet.png" },
+  { name: "Veeam", logo: "/imgs/brands/veeam.png" },
+  { name: "Ubiquiti", logo: "/imgs/brands/ubiquiti.png" },
 ];
+
+/**
+ * Which brands are worth showing on a given service category's pages
+ * (report §4.1 / item 10) — a printer repair page should show the printer
+ * brands, not the PC ones. Anything not listed falls back to the full set.
+ */
+const brandsByServiceCategory: Record<string, string[]> = {
+  "print-copier": [
+    "Canon",
+    "Konica Minolta",
+    "Kyocera",
+    "Ricoh",
+    "Sharp",
+    "Triumph-Adler",
+    "UTAX",
+    "HP",
+    "Epson",
+    "Brother",
+  ],
+  "it-infrastructure": [
+    "Dell",
+    "HP",
+    "Lenovo",
+    "ASUS",
+    "Microsoft 365",
+    "Google Workspace",
+    "Fortinet",
+    "Veeam",
+    "Ubiquiti",
+  ],
+  "security-communication": ["Hikvision", "Ubiquiti", "NEC", "Fortinet"],
+  digital: ["Microsoft 365", "Google Workspace"],
+  "office-supplies": ["Dell", "HP", "Lenovo", "ASUS", "Logitech", "NEC"],
+};
+
+export function brandsForServiceCategory(categoryKey: string): Brand[] {
+  const names = brandsByServiceCategory[categoryKey];
+  if (!names) return brands;
+
+  const matched = brands.filter((brand) => names.includes(brand.name));
+  return matched.length > 0 ? matched : brands;
+}
 
 export const stats = [
   { value: `${yearsOfExperience}+`, label: "Years in business" },
