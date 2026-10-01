@@ -17,7 +17,7 @@ import {
 import { Container } from "@/components/container";
 import { Logo } from "@/components/logo";
 import { QuoteButton } from "@/components/quote-button";
-import { megaMenus, primaryLinks, printersNavLink } from "@/lib/navigation";
+import { megaMenus, primaryLinks } from "@/lib/navigation";
 import { contact } from "@/lib/site";
 
 export function SiteHeader() {
@@ -157,18 +157,6 @@ export function SiteHeader() {
               );
             })}
 
-            {/* Report item 6: the core business gets its own nav item. */}
-            <Link
-              href={printersNavLink.href}
-              aria-current={isActive(printersNavLink.href) ? "page" : undefined}
-              className={`whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-                isActive(printersNavLink.href)
-                  ? "text-primary-700"
-                  : "text-slate-600 hover:text-primary-700"
-              }`}
-            >
-              {printersNavLink.label}
-            </Link>
 
             {megaMenus.map((menu) => {
               const isOpen = openMenu === menu.key;
@@ -394,22 +382,6 @@ export function SiteHeader() {
                 }`}
               >
                 About
-              </Link>
-
-              {/* Report item 6: mirrored on mobile as its own entry. */}
-              <Link
-                href={printersNavLink.href}
-                onClick={closeMenu}
-                aria-current={
-                  isActive(printersNavLink.href) ? "page" : undefined
-                }
-                className={`rounded-md px-3 py-3 text-base font-semibold transition-colors ${
-                  isActive(printersNavLink.href)
-                    ? "bg-primary-50 text-primary-700"
-                    : "text-slate-700 hover:bg-slate-50"
-                }`}
-              >
-                {printersNavLink.label}
               </Link>
 
               {megaMenus.map((menu) => (

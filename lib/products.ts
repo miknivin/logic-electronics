@@ -27,6 +27,8 @@ export type Product = {
   blurb: string;
   badges: ProductBadge[];
   image?: string;
+  /** Explicit sub-category slugs, overriding the rule-based matching. */
+  tags?: string[];
   /**
    * Paper format, where known. Left off rather than guessed — the detail
    * page simply omits the chip when it is absent.
@@ -42,6 +44,29 @@ export type Product = {
   specs?: { label: string; value: string }[];
 };
 
+/**
+ * A filterable slice of a category, e.g. "New Printers" within Sales.
+ *
+ * `match` decides membership. Products are tagged by rule rather than by
+ * hand so a new product lands in the right sub-category automatically; set
+ * `tags` explicitly on a product to override.
+ */
+export type ProductSubcategory = {
+  slug: string;
+  label: string;
+  /** Tested against "<brand> <name> <blurb>", lowercased. */
+  match?: RegExp;
+  /** Also matches when the product carries this badge. */
+  badge?: ProductBadge;
+  /**
+   * Category slug whose listing this sub-category actually lives on. Sales
+   * lists printer types, but the printers themselves sit in
+   * `printers-copiers` — without this, "New Printers" opened the Sales page
+   * and showed laptops, which is exactly what the client reported.
+   */
+  linkTo?: string;
+};
+
 export type ProductCategory = {
   slug: string;
   /** Nav/menu label. */
@@ -49,9 +74,12 @@ export type ProductCategory = {
   /** Listing page H1. */
   heading: string;
   description: string;
-  /** Sub-groupings shown in the Products mega menu. */
-  menuItems: string[];
+  /** Sub-groupings shown in the mega menu and as tabs on the listing page. */
+  subcategories: ProductSubcategory[];
 };
+
+const COPIER_RE = /bizhub|imagerunner|taskalfa|mp c|im c|ar-|bp-|mx-|\d{4}ci|\d{3}ci/;
+const DESKTOP_PRINTER_RE = /ecosys|mfc-|laserjet|workforce|wf-/;
 
 export const productCategories: ProductCategory[] = [
   {
@@ -60,12 +88,11 @@ export const productCategories: ProductCategory[] = [
     heading: "Printers & Copiers",
     description:
       "Multifunction copiers, laser and inkjet printers from every major brand, new or professionally refurbished, available to buy or rent.",
-    menuItems: [
-      "New Printers",
-      "Refurbished Printers",
-      "Copiers",
-      "Multifunction Printers",
-      "Scanners",
+    subcategories: [
+      { slug: "new-printers", label: "New Printers", badge: "New" },
+      { slug: "refurbished-printers", label: "Refurbished Printers", badge: "Refurbished" },
+      { slug: "copiers", label: "Copiers", match: COPIER_RE },
+      { slug: "multifunction-printers", label: "Multifunction Printers", match: /fax/ },
     ],
   },
   {
@@ -74,17 +101,17 @@ export const productCategories: ProductCategory[] = [
     heading: "Products for Sale",
     description:
       "New and refurbished printers, copiers, computers and office hardware, supplied, configured and supported by our own engineers.",
-    menuItems: [
-      "New Printers",
-      "Refurbished Printers",
-      "Copiers",
-      "Multifunction Printers",
-      "Scanners",
-      "Projectors",
-      "Laptops",
-      "Desktops",
-      "Custom Build PCs",
-      "UPS Systems",
+    subcategories: [
+      { slug: "new-printers", label: "New Printers", badge: "New", linkTo: "printers-copiers" },
+      { slug: "refurbished-printers", label: "Refurbished Printers", badge: "Refurbished", linkTo: "printers-copiers" },
+      { slug: "copiers", label: "Copiers", match: COPIER_RE, linkTo: "printers-copiers" },
+      { slug: "multifunction-printers", label: "Multifunction Printers", match: /fax/, linkTo: "printers-copiers" },
+      { slug: "scanners", label: "Scanners", match: /scanner|imageformula/ },
+      { slug: "projectors", label: "Projectors", match: /projector/ },
+      { slug: "laptops", label: "Laptops", match: /laptop|thinkpad|probook|latitude/ },
+      { slug: "desktops", label: "Desktops", match: /desktop|workstation/ },
+      { slug: "custom-build-pcs", label: "Custom Build PCs", match: /custom build/ },
+      { slug: "ups-systems", label: "UPS Systems", match: /ups/ },
     ],
   },
   {
@@ -93,7 +120,10 @@ export const productCategories: ProductCategory[] = [
     heading: "Printers & Copiers for Rent",
     description:
       "Short and long-term rental across the UAE, with toner, servicing and breakdown cover inside one predictable monthly cost.",
-    menuItems: ["Rental Printers", "Rental Copiers"],
+    subcategories: [
+      { slug: "rental-printers", label: "Rental Printers", match: DESKTOP_PRINTER_RE },
+      { slug: "rental-copiers", label: "Rental Copiers", match: COPIER_RE },
+    ],
   },
   {
     slug: "pc-components",
@@ -101,15 +131,17 @@ export const productCategories: ProductCategory[] = [
     heading: "PC Components",
     description:
       "Monitors, memory, storage and the internals we fit, upgrade and support across your workstations.",
-    menuItems: [
-      "Monitors",
-      "RAM",
-      "Storage (SSD & HDD)",
-      "Motherboards",
-      "Processors (CPUs)",
-      "Graphics Cards (GPUs)",
-      "Casings / Cabinets",
-      "Cooling Systems",
+    subcategories: [
+      { slug: "monitors", label: "Monitors", match: /monitor|display/ },
+      { slug: "ram", label: "RAM", match: /ram|memory/ },
+      { slug: "storage", label: "Storage (SSD & HDD)", match: /storage|ssd|hdd|drive/ },
+      { slug: "motherboards", label: "Motherboards", match: /motherboard/ },
+      { slug: "processors", label: "Processors (CPUs)", match: /processor|cpu/ },
+      { slug: "graphics-cards", label: "Graphics Cards (GPUs)", match: /graphics|gpu/ },
+      { slug: "custom-build-pcs", label: "Custom Build PCs", match: /custom build pc/ },
+      { slug: "casings", label: "Casings / Cabinets", match: /casing|cabinet|chassis/ },
+      { slug: "cooling", label: "Cooling Systems", match: /cooling/ },
+      { slug: "keyboards-mice", label: "Keyboards & Mice", match: /keyboard|mice|mouse/ },
     ],
   },
   {
@@ -118,16 +150,16 @@ export const productCategories: ProductCategory[] = [
     heading: "Printer Consumables",
     description:
       "Original, compatible and remanufactured toner, ink and wear parts for every printer and copier brand we service.",
-    menuItems: [
-      "Toner Cartridges",
-      "Ink Cartridges",
-      "Drum Units",
-      "Fuser Units",
-      "Maintenance / Roller Kits",
-      "Laptop & PC Batteries",
-      "Laptop Spare Parts",
-      "Laptop & Mobile Chargers",
-      "Keyboards & Mice",
+    subcategories: [
+      { slug: "toner-cartridges", label: "Toner Cartridges", match: /toner/ },
+      { slug: "ink-cartridges", label: "Ink Cartridges", match: /ink/ },
+      { slug: "drum-units", label: "Drum Units", match: /drum/ },
+      { slug: "fuser-units", label: "Fuser Units", match: /fuser/ },
+      { slug: "maintenance-kits", label: "Maintenance / Roller Kits", match: /maintenance|roller/ },
+      { slug: "batteries", label: "Laptop & PC Batteries", match: /batter/ },
+      { slug: "laptop-spares", label: "Laptop Spare Parts", match: /spare/ },
+      { slug: "chargers", label: "Laptop & Mobile Chargers", match: /charger|adapter/ },
+      { slug: "keyboards-mice", label: "Keyboards & Mice", match: /keyboard|mice|mouse/, linkTo: "pc-components" },
     ],
   },
 ];
@@ -191,6 +223,7 @@ export const products: Product[] = [
   { slug: "graphics-cards", name: "Graphics Cards (GPUs)", brand: "ASUS", category: "pc-components", blurb: "Workstation and design-grade graphics", badges: ["New"] },
   { slug: "casings-cabinets", name: "Casings & Cabinets", brand: "ASUS", category: "pc-components", blurb: "Chassis for custom builds", badges: ["New"] },
   { slug: "cooling-systems", name: "Cooling Systems", brand: "ASUS", category: "pc-components", blurb: "Air and liquid cooling", badges: ["New"] },
+  { slug: "custom-pc-build-components", name: "Custom Build PCs", brand: "ASUS", category: "pc-components", blurb: "Specified, built and tested to your workload and budget", badges: ["New", "Featured"] },
   { slug: "keyboards-mice", name: "Keyboards & Mice", brand: "Logitech", category: "pc-components", blurb: "Wired and wireless desk peripherals", badges: ["New"] },
 
   /* -------------------------------------------------------- consumables */
@@ -205,6 +238,7 @@ export const products: Product[] = [
   { slug: "fuser-units", name: "Fuser Units", brand: "UTAX", category: "consumables", blurb: "Fusers for production and office machines", badges: ["New"] },
   { slug: "maintenance-roller-kits", name: "Maintenance & Roller Kits", brand: "Triumph-Adler", category: "consumables", blurb: "Feed rollers and service kits", badges: ["New"] },
   { slug: "laptop-pc-batteries", name: "Laptop & PC Batteries", brand: "Dell", category: "consumables", blurb: "Genuine replacement batteries", badges: ["New"] },
+  { slug: "laptop-spare-parts", name: "Laptop Spare Parts", brand: "Dell", category: "consumables", blurb: "Screens, keyboards, hinges and internal components", badges: ["New"] },
   { slug: "laptop-chargers", name: "Laptop & Mobile Chargers", brand: "Lenovo", category: "consumables", blurb: "Power adapters and chargers", badges: ["New"] },
 ];
 
@@ -227,10 +261,40 @@ export function getProduct(slug: string): Product | undefined {
 const ART = {
   copier: "/imgs/products/copier.webp",
   printer: "/imgs/products/printer.webp",
-  toner: "/imgs/products/toner.webp",
-  monitor: "/imgs/products/monitor.webp",
-  laptop: "/imgs/products/laptop.webp",
 } as const;
+
+/**
+ * Freely-licensed hardware photos from Wikimedia Commons, used for the
+ * non-machine products that have no supplier photography. Sources and
+ * licences are recorded in public/imgs/products/CREDITS.json.
+ * Matched on the product name, longest key first so "toner cartridges"
+ * beats "cartridges".
+ */
+const PHOTOS: [RegExp, string][] = [
+  [/keyboard|mice|mouse/, "/imgs/products/photo-keyboard-mouse.webp"],
+  [/toner/, "/imgs/products/photo-toner-cartridge.webp"],
+  [/ink cartridge/, "/imgs/products/photo-ink-cartridge.webp"],
+  [/drum/, "/imgs/products/photo-drum-unit.webp"],
+  [/fuser/, "/imgs/products/photo-drum-unit.webp"],
+  [/maintenance|roller/, "/imgs/products/photo-drum-unit.webp"],
+  [/batter/, "/imgs/products/photo-battery.webp"],
+  [/charger|adapter/, "/imgs/products/photo-charger.webp"],
+  [/spare part/, "/imgs/products/photo-motherboard.webp"],
+  [/monitor|display/, "/imgs/products/photo-monitor.webp"],
+  [/memory|ram/, "/imgs/products/photo-ram.webp"],
+  [/storage|ssd|hdd/, "/imgs/products/photo-storage.webp"],
+  [/motherboard/, "/imgs/products/photo-motherboard.webp"],
+  [/processor|cpu/, "/imgs/products/photo-cpu.webp"],
+  [/graphics|gpu/, "/imgs/products/photo-gpu.webp"],
+  [/casing|cabinet|chassis/, "/imgs/products/photo-pc-case.webp"],
+  [/cooling/, "/imgs/products/photo-cooling.webp"],
+  [/custom build/, "/imgs/products/photo-desktop-pc.webp"],
+  [/laptop|thinkpad|probook|latitude/, "/imgs/products/photo-laptop.webp"],
+  [/desktop|workstation/, "/imgs/products/photo-desktop-pc.webp"],
+  [/projector/, "/imgs/products/photo-projector.webp"],
+  [/scanner|imageformula/, "/imgs/products/photo-scanner.webp"],
+  [/ups/, "/imgs/products/photo-ups.webp"],
+];
 
 /** Desktop-class machines, as opposed to floor-standing A3 copiers. */
 const DESKTOP_HINTS = [
@@ -245,26 +309,15 @@ const DESKTOP_HINTS = [
 function artFor(product: Product): string {
   const name = `${product.name} ${product.blurb}`.toLowerCase();
 
-  switch (product.category) {
-    case "printers-copiers":
-    case "rental":
-      return DESKTOP_HINTS.some((hint) => name.includes(hint))
-        ? ART.printer
-        : ART.copier;
-    case "consumables":
-      if (/batter|charger|keyboard|mice|spare/.test(name)) return ART.laptop;
-      return ART.toner;
-    case "pc-components":
-      return /monitor|display/.test(name) ? ART.monitor : ART.laptop;
-    case "sales":
-      if (/printer|copier|scanner|imagerunner|bizhub/.test(name)) {
-        return ART.printer;
-      }
-      if (/monitor|projector|display/.test(name)) return ART.monitor;
-      return ART.laptop;
-    default:
-      return ART.printer;
+  // Machines keep the line art; everything else now has a real photo.
+  if (product.category === "printers-copiers" || product.category === "rental") {
+    return DESKTOP_HINTS.some((hint) => name.includes(hint))
+      ? ART.printer
+      : ART.copier;
   }
+
+  const photo = PHOTOS.find(([pattern]) => pattern.test(name));
+  return photo ? photo[1] : ART.printer;
 }
 
 /** Real photo when supplied, brand-styled illustration otherwise. */
@@ -283,6 +336,53 @@ export function getRelatedProducts(product: Product, limit = 4): Product[] {
     ...sameCategory.filter((candidate) => candidate.brand === product.brand),
     ...sameCategory.filter((candidate) => candidate.brand !== product.brand),
   ].slice(0, limit);
+}
+
+/** Does a product belong to a sub-category? Explicit tags win over the rule. */
+export function matchesSubcategory(
+  product: Product,
+  sub: ProductSubcategory,
+): boolean {
+  if (product.tags?.includes(sub.slug)) return true;
+  if (sub.badge && product.badges.includes(sub.badge)) return true;
+  if (sub.match) {
+    return sub.match.test(
+      `${product.brand} ${product.name} ${product.blurb}`.toLowerCase(),
+    );
+  }
+  return false;
+}
+
+export function getSubcategory(
+  categorySlug: string,
+  subSlug: string,
+): ProductSubcategory | undefined {
+  return getProductCategory(categorySlug)?.subcategories.find(
+    (sub) => sub.slug === subSlug,
+  );
+}
+
+/**
+ * Products in a category, narrowed to a sub-category when one is given.
+ * A sub-category that matches nothing falls back to the whole category
+ * rather than showing an empty page.
+ */
+export function getFilteredProducts(
+  categorySlug: string,
+  subSlug?: string,
+): { products: Product[]; activeSub?: ProductSubcategory; empty: boolean } {
+  const all = getProductsByCategory(categorySlug);
+  if (!subSlug) return { products: all, empty: false };
+
+  const sub = getSubcategory(categorySlug, subSlug);
+  if (!sub) return { products: all, empty: false };
+
+  const filtered = all.filter((product) => matchesSubcategory(product, sub));
+  return {
+    products: filtered.length > 0 ? filtered : all,
+    activeSub: sub,
+    empty: filtered.length === 0,
+  };
 }
 
 export function getProductsByCategory(categorySlug: string): Product[] {

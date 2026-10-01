@@ -4,14 +4,16 @@ import {
   Cctv,
   Cpu,
   Database,
+  Globe,
   Network,
   Phone,
   Printer,
   Repeat,
+  Truck,
   Wrench,
+  Zap,
 } from "lucide-react";
 
-import { serviceCategories } from "@/lib/services";
 import { productCategories } from "@/lib/products";
 
 export type MenuLink = { label: string; href: string };
@@ -41,8 +43,8 @@ export type MegaMenu = {
   footerHref: string;
 };
 
-/** Product sub-category labels, capped so no column runs too long. */
-const MAX_COLUMN_LINKS = 6;
+/* Columns list every sub-category the report specifies — truncating hid
+   items like "Keyboards & Mice" and drew a revision round. */
 
 function productColumn(slug: string, icon: LucideIcon): MenuColumn {
   const category = productCategories.find((c) => c.slug === slug);
@@ -52,11 +54,14 @@ function productColumn(slug: string, icon: LucideIcon): MenuColumn {
     title: category?.title ?? slug,
     icon,
     href,
-    /* Sub-category labels all point at the category listing, which is the
-       page that actually exists — there are no per-sub-category pages. */
-    links: (category?.menuItems ?? [])
-      .slice(0, MAX_COLUMN_LINKS)
-      .map((label) => ({ label, href })),
+    /* Each sub-category links to the listing pre-filtered to itself, so
+       "New Printers" and "Refurbished Printers" land on different results
+       rather than the same unfiltered page (report items 15, 17, 18). */
+    links: (category?.subcategories ?? [])
+      .map((sub) => ({
+        label: sub.label,
+        href: `/products/${sub.linkTo ?? slug}?type=${sub.slug}`,
+      })),
   };
 }
 
@@ -89,12 +94,57 @@ const servicesMenu: MegaMenu = {
   label: "Services",
   href: "/services",
   variant: "headings",
-  columns: serviceCategories.map((category) => ({
-    title: category.title,
-    icon: category.icon,
-    href: `/services#${category.key}`,
-    links: [],
-  })),
+  /*
+   * The seven headings the report specifies, rather than all 40 sub-items,
+   * which the client flagged as overcrowded (report item 8). Each one links
+   * to the content that actually covers it — a services-page section where
+   * one exists, otherwise the specific offering on the relevant service
+   * page, so no heading lands on something unrelated.
+   */
+  columns: [
+    {
+      title: "Printer & Copier Services",
+      icon: Printer,
+      href: "/services#print-copier",
+      links: [],
+    },
+    {
+      title: "Managed IT Services",
+      icon: Cpu,
+      href: "/services/managed-it-services",
+      links: [],
+    },
+    {
+      title: "Installation & Deployment",
+      icon: Wrench,
+      href: "/services/managed-it-services#new-office-it-setup",
+      links: [],
+    },
+    {
+      title: "Network & CCTV Maintenance",
+      icon: Network,
+      href: "/services/networking-and-switching",
+      links: [],
+    },
+    {
+      title: "UPS Services",
+      icon: Zap,
+      href: "/services/datacenter-solutions#ups-solutions",
+      links: [],
+    },
+    {
+      title: "Office Shifting & IT Relocation",
+      icon: Truck,
+      href: "/services/managed-it-services#office-shifting-and-datacenter-relocation",
+      links: [],
+    },
+    {
+      title: "Digital Services",
+      icon: Globe,
+      href: "/services#digital",
+      links: [],
+    },
+  ],
   footerNote: "Repairs, maintenance, AMC and IT support delivered by our own engineers.",
   footerLabel: "View all services",
   footerHref: "/services",
@@ -114,10 +164,11 @@ const solutionsMenu: MegaMenu = {
       icon: Cctv,
       href: "/services/cctv-surveillance",
       links: [
-        { label: "IP & HD CCTV Systems", href: "/services/cctv-surveillance" },
-        { label: "Access Control Systems", href: "/services/communication-and-lv-systems" },
-        { label: "Biometric Attendance", href: "/services/communication-and-lv-systems" },
-        { label: "Cybersecurity Services", href: "/services/cybersecurity-services" },
+        { label: "IP & HD CCTV Systems", href: "/services/cctv-surveillance#camera-supply-and-installation" },
+        { label: "NVR / DVR Systems", href: "/services/cctv-surveillance#recording-and-storage" },
+        { label: "Remote Monitoring", href: "/services/cctv-surveillance#remote-and-mobile-viewing" },
+        { label: "Access Control Systems", href: "/services/communication-and-lv-systems#access-control" },
+        { label: "Biometric Attendance", href: "/services/communication-and-lv-systems#biometric-attendance" },
       ],
     },
     {
@@ -125,10 +176,11 @@ const solutionsMenu: MegaMenu = {
       icon: Network,
       href: "/services/networking-and-switching",
       links: [
-        { label: "Structured Cabling", href: "/services/networking-and-switching" },
-        { label: "Wi-Fi & LAN/WAN Setup", href: "/services/networking-and-switching" },
-        { label: "Firewall & Security Setup", href: "/services/cybersecurity-services" },
-        { label: "Server Virtualisation", href: "/services/datacenter-solutions" },
+        { label: "Structured Cabling", href: "/services/networking-and-switching#structured-cabling" },
+        { label: "Wi-Fi & LAN/WAN Setup", href: "/services/networking-and-switching#wi-fi-services" },
+        { label: "Firewall & Security Setup", href: "/services/cybersecurity-services#next-generation-firewall" },
+        { label: "NAS & Data Storage", href: "/services/datacenter-solutions#nas-storage" },
+        { label: "Server Virtualisation", href: "/services/datacenter-solutions#virtualisation" },
       ],
     },
     {
@@ -136,10 +188,11 @@ const solutionsMenu: MegaMenu = {
       icon: Database,
       href: "/services/data-backup-and-protection",
       links: [
-        { label: "Cloud Data Backup", href: "/services/data-backup-and-protection" },
-        { label: "On-Premise & NAS Backup", href: "/services/data-backup-and-protection" },
-        { label: "Data Loss Prevention", href: "/services/data-backup-and-protection" },
-        { label: "Business Email Solutions", href: "/services/business-email-solutions" },
+        { label: "Cloud Data Backup", href: "/services/data-backup-and-protection#cloud-data-backup" },
+        { label: "On-Premise Backup", href: "/services/data-backup-and-protection#on-premise-backup" },
+        { label: "Workstation & NAS Backup", href: "/services/data-backup-and-protection#workstation-and-nas-backup" },
+        { label: "VM Backup", href: "/services/data-backup-and-protection#virtual-machine-backup" },
+        { label: "Data Loss Prevention", href: "/services/data-backup-and-protection#data-loss-prevention" },
       ],
     },
     {
@@ -147,10 +200,11 @@ const solutionsMenu: MegaMenu = {
       icon: Phone,
       href: "/services/communication-and-lv-systems",
       links: [
-        { label: "IP Phone Solutions", href: "/services/communication-and-lv-systems" },
-        { label: "Conference Solutions", href: "/services/communication-and-lv-systems" },
-        { label: "UPS Solutions", href: "/services/datacenter-solutions" },
-        { label: "IT Datacenter Solutions", href: "/services/datacenter-solutions" },
+        { label: "IP Phone Solutions", href: "/services/communication-and-lv-systems#ip-phone-solutions" },
+        { label: "Conference Solutions", href: "/services/communication-and-lv-systems#conference-solutions" },
+        { label: "Intercom Systems", href: "/services/communication-and-lv-systems#intercom-systems" },
+        { label: "UPS Solutions", href: "/services/datacenter-solutions#ups-solutions" },
+        { label: "Environmental Control", href: "/services/datacenter-solutions#environmental-control" },
       ],
     },
   ],
@@ -219,8 +273,6 @@ export const primaryLinks: MenuLink[] = [
   { label: "About", href: "/about" },
 ];
 
-/** Report item 6: Printers & Copiers promoted to its own nav item. */
-export const printersNavLink: MenuLink = {
-  label: "Printers & Copiers",
-  href: "/products/printers-copiers",
-};
+/* Report item 14 reversed item 6: the standalone "Printers & Copiers" nav
+   link is gone. The entry inside Products now covers it, which only became
+   safe once the Products sub-links stopped all pointing at one page. */

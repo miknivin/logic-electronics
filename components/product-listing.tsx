@@ -2,15 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ArrowRight, LayoutGrid, List, Menu } from "lucide-react";
 
 import { QuoteButton } from "@/components/quote-button";
 import { productImage, type Product, type ProductBadge } from "@/lib/products";
 
+type ListingCategory = {
+  slug: string;
+  title: string;
+  subcategories: { slug: string; label: string }[];
+};
+
 type ProductListingProps = {
   products: Product[];
   brands: string[];
+  /** Drives the sub-category tab row. */
+  category?: ListingCategory;
+  /** sub-category slug -> product slugs, computed server-side from the rules. */
+  membership?: Record<string, string[]>;
   /** Brand name -> logo path, resolved server-side from `brands` in lib/site. */
   brandLogos: Record<string, string>;
   /**
@@ -35,24 +46,81 @@ export function ProductListing({
   brands,
   brandLogos,
   quoteService,
+  category,
+  membership,
 }: ProductListingProps) {
   const [activeBrand, setActiveBrand] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [showAllBrands, setShowAllBrands] = useState(false);
 
+  /* Read from the URL rather than local state, so a menu link like
+     ?type=new-printers lands pre-filtered and the result is shareable. */
+  const typeParam = useSearchParams().get("type");
+  const activeSub = category?.subcategories.find((s) => s.slug === typeParam);
+  const inSub = activeSub ? membership?.[activeSub.slug] : undefined;
+  const subEmpty = Boolean(activeSub) && (inSub?.length ?? 0) === 0;
+
   const visibleBrands = showAllBrands
     ? brands
     : brands.slice(0, BRANDS_BEFORE_FOLD);
 
-  const filtered = useMemo(
-    () =>
-      activeBrand
-        ? products.filter((product) => product.brand === activeBrand)
-        : products,
-    [products, activeBrand],
-  );
+  const filtered = useMemo(() => {
+    // A sub-category that matches nothing shows the full range instead of a
+    // dead end; the notice above the grid explains why.
+    const bySub =
+      inSub && inSub.length > 0
+        ? products.filter((product) => inSub.includes(product.slug))
+        : products;
+    return activeBrand
+      ? bySub.filter((product) => product.brand === activeBrand)
+      : bySub;
+  }, [products, activeBrand, inSub]);
+
+  const tabClass = (isActive: boolean) =>
+    `inline-flex rounded-full px-4 py-2 text-sm font-semibold ring-1 transition-colors ${
+      isActive
+        ? "bg-primary-700 text-white ring-primary-700"
+        : "bg-white text-primary-800 ring-slate-200 hover:bg-primary-700 hover:text-white hover:ring-primary-700"
+    }`;
 
   return (
+    <>
+      {/* Sub-category tabs (report item 18) — and the visible proof that each
+          Products menu link now lands somewhere different (items 15, 17). */}
+      {category && category.subcategories.length > 0 ? (
+        <nav aria-label={`${category.title} categories`} className="mb-8">
+          <ul className="flex flex-wrap gap-2">
+            <li>
+              <Link
+                href={`/products/${category.slug}`}
+                className={tabClass(!activeSub)}
+              >
+                All {category.title}
+              </Link>
+            </li>
+            {category.subcategories.map((sub) => (
+              <li key={sub.slug}>
+                <Link
+                  href={`/products/${category.slug}?type=${sub.slug}`}
+                  aria-current={activeSub?.slug === sub.slug ? "true" : undefined}
+                  className={tabClass(activeSub?.slug === sub.slug)}
+                >
+                  {sub.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
+
+      {subEmpty ? (
+        <p className="mb-8 rounded-lg border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+          Nothing listed under{" "}
+          <span className="font-semibold">{activeSub?.label}</span> yet, so the
+          full range is shown below. Ask us and we will source it.
+        </p>
+      ) : null}
+
     <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
       {/* ------------------------------------------------ brands sidebar */}
       <aside className="lg:col-span-3">
@@ -125,6 +193,7 @@ export function ProductListing({
           <p className="text-sm text-slate-600">
             Showing <span className="font-semibold">{filtered.length}</span>{" "}
             {filtered.length === 1 ? "product" : "products"}
+            {activeSub && !subEmpty ? ` in ${activeSub.label}` : ""}
             {activeBrand ? ` from ${activeBrand}` : ""}
           </p>
 
@@ -178,6 +247,7 @@ export function ProductListing({
         </div>
       </div>
     </div>
+    </>
   );
 }
 

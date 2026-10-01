@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
 import { BrandGrid } from "@/components/brand-grid";
@@ -10,6 +11,7 @@ import {
   getBrandsInCategory,
   getProductCategory,
   getProductsByCategory,
+  matchesSubcategory,
   productCategories,
 } from "@/lib/products";
 import { brands, site } from "@/lib/site";
@@ -65,7 +67,7 @@ export default async function ProductCategoryPage({ params }: PageProps) {
     <>
       <PageHeader
         breadcrumbs={[
-          { label: "Products", href: "/products/printers-copiers" },
+          { label: "Products", href: "/products/sales" },
           { label: category.title },
         ]}
         title={category.heading}
@@ -74,12 +76,33 @@ export default async function ProductCategoryPage({ params }: PageProps) {
 
       <section className="py-14 sm:py-20">
         <Container>
-          <ProductListing
-            products={categoryProducts}
-            brands={categoryBrands}
-            brandLogos={brandLogos}
-            quoteService={quoteServiceByCategory[category.slug]}
-          />
+          {/* Suspense is required because the listing reads the `type`
+              search param; without it this page would be forced dynamic and
+              lose static generation. */}
+          <Suspense fallback={null}>
+            <ProductListing
+              products={categoryProducts}
+              brands={categoryBrands}
+              brandLogos={brandLogos}
+              quoteService={quoteServiceByCategory[category.slug]}
+              category={{
+                slug: category.slug,
+                title: category.title,
+                subcategories: category.subcategories.map((sub) => ({
+                  slug: sub.slug,
+                  label: sub.label,
+                })),
+              }}
+              membership={Object.fromEntries(
+                category.subcategories.map((sub) => [
+                  sub.slug,
+                  categoryProducts
+                    .filter((product) => matchesSubcategory(product, sub))
+                    .map((product) => product.slug),
+                ]),
+              )}
+            />
+          </Suspense>
         </Container>
       </section>
 

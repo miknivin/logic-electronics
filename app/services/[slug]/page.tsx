@@ -17,6 +17,15 @@ import {
 } from "@/lib/services";
 import { brandsForServiceCategory, contact, site } from "@/lib/site";
 
+/** Stable anchor id for an offering, e.g. "UPS solutions" -> "ups-solutions". */
+function offeringId(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -127,9 +136,13 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
               <dl className="mt-10 grid gap-6 sm:grid-cols-2">
                 {service.offerings.map((offering) => (
+                  /* Anchored so a Solutions menu link can land on the exact
+                     offering it names, and `target:` highlights it on arrival
+                     (report items 19 and 30). */
                   <div
                     key={offering.title}
-                    className="rounded-xl border border-slate-200 bg-white p-6"
+                    id={offeringId(offering.title)}
+                    className="scroll-mt-36 rounded-xl border border-slate-200 bg-white p-6 target:border-secondary-400 target:bg-secondary-50 target:ring-2 target:ring-secondary-200"
                   >
                     <dt className="flex items-start gap-2.5 text-base font-bold text-primary-950">
                       <Check
