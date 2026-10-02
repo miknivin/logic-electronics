@@ -1,7 +1,9 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  Banknote,
   Boxes,
   Cctv,
+  FileCheck,
   Cpu,
   Database,
   Droplets,
@@ -264,22 +266,109 @@ export const services: Service[] = [
         description:
           "A clear view of usage, service history and toner consumption across every machine on the contract.",
       },
-      {
-        title: "Leasing",
-        description:
-          "Structured leases that spread the cost of the hardware over the term, so the machines sit on a predictable monthly line rather than a capital purchase. Ownership options at the end of term.",
-      },
-      {
-        title: "FSMA (Full-Service Maintenance Agreement)",
-        description:
-          "Hardware, consumables, parts, labour and support bundled into a single agreement billed per month or per page. One invoice, one point of contact, no separate toner or call-out charges.",
-      },
     ],
     highlights: [
       "A fixed annual cost you can budget for",
       "Same day response for contract customers",
       "24/7 technical support line",
       "One contract covers mixed brand fleets",
+    ],
+  },
+  {
+    slug: "equipment-leasing",
+    title: "Equipment Leasing",
+    category: "print-copier",
+    icon: Banknote,
+    tagline: "Office equipment on a monthly line, not a capital purchase",
+    summary:
+      "Lease printers, copiers and IT hardware over a fixed term, with the option to own, upgrade or hand back at the end.",
+    overview: [
+      "Leasing is for businesses that need the equipment but would rather not tie up cash in it. You get the hardware you actually want rather than the one the budget stretches to, and the cost sits on a predictable monthly line instead of landing in one lump.",
+      "We arrange terms from one to five years across printers, copiers, servers, laptops and workstations. At the end you can buy the equipment outright, roll into newer hardware, or simply hand it back. Which of those makes sense is usually clear a year out, so nothing has to be decided up front.",
+    ],
+    offerings: [
+      {
+        title: "Fixed-term leases",
+        description:
+          "One to five year terms with the monthly figure agreed and fixed at the start, so the finance team can budget against it.",
+      },
+      {
+        title: "End-of-term options",
+        description:
+          "Buy the equipment at residual value, upgrade onto current hardware, or return it. You decide near the end, not at signing.",
+      },
+      {
+        title: "Mixed equipment on one agreement",
+        description:
+          "Printers, copiers, laptops, servers and network hardware can sit on a single lease rather than several.",
+      },
+      {
+        title: "Mid-term upgrades",
+        description:
+          "Add machines or move up a model as headcount changes, with the schedule adjusted rather than restarted.",
+      },
+      {
+        title: "Maintenance bundled in",
+        description:
+          "Add servicing and consumables to the lease so the monthly figure covers the running of the equipment too, not just the hardware.",
+      },
+    ],
+    highlights: [
+      "No large capital outlay",
+      "Fixed monthly cost you can budget",
+      "Own, upgrade or return at the end",
+      "One agreement across mixed equipment",
+    ],
+  },
+  {
+    slug: "fsma",
+    title: "FSMA (Full-Service Maintenance Agreement)",
+    category: "print-copier",
+    icon: FileCheck,
+    tagline: "Hardware, consumables and support on one agreement",
+    summary:
+      "A single agreement covering the machine, the toner, the parts, the labour and the support, billed monthly or per page.",
+    overview: [
+      "An FSMA rolls everything a machine costs to run into one agreement: the hardware itself, consumables, replacement parts, engineer labour and support. You are billed either a flat monthly figure or per page printed, and nothing else arrives separately.",
+      "The difference from an AMC is scope. An AMC covers servicing a machine you already own. An FSMA covers the machine as well, so there is no purchase, no separate toner ordering and no call-out charges. For finance teams it turns printing from an unpredictable spend into a line item that tracks actual usage.",
+    ],
+    offerings: [
+      {
+        title: "Equipment included",
+        description:
+          "The machine is supplied as part of the agreement, so there is no capital purchase and no separate lease to manage.",
+      },
+      {
+        title: "All consumables covered",
+        description:
+          "Toner, drums, fusers and wear parts are supplied as needed. Nothing is ordered separately and nothing is billed separately.",
+      },
+      {
+        title: "Parts and labour",
+        description:
+          "Breakdowns, worn components and engineer time are all inside the agreement, so a major fault does not become a major invoice.",
+      },
+      {
+        title: "Per-page or flat monthly billing",
+        description:
+          "Pay a fixed monthly figure, or an agreed rate per page so the cost follows what you actually print.",
+      },
+      {
+        title: "Scheduled preventive maintenance",
+        description:
+          "Planned visits for cleaning, calibration and firmware, so faults are headed off rather than waited for.",
+      },
+      {
+        title: "Agreed response times",
+        description:
+          "Service levels written into the agreement, with same-day response targets and a replacement unit if a machine cannot be fixed on site.",
+      },
+    ],
+    highlights: [
+      "One invoice covers everything",
+      "No capital purchase",
+      "Toner and parts never billed separately",
+      "Cost tracks what you actually print",
     ],
   },
   {

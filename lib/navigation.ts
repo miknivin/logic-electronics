@@ -212,8 +212,8 @@ const rentalsMenu: MegaMenu = {
       links: [
         { label: "AMC", href: "/services/printer-amc" },
         { label: "Annual Rental Contracts", href: "/services/printer-and-copier-rental" },
-        { label: "Leasing", href: "/services/printer-amc#leasing" },
-        { label: "FSMA", href: "/services/printer-amc#fsma-full-service-maintenance-agreement" },
+        { label: "Leasing", href: "/services/equipment-leasing" },
+        { label: "FSMA", href: "/services/fsma" },
       ],
     },
   ],
