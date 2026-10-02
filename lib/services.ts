@@ -264,6 +264,16 @@ export const services: Service[] = [
         description:
           "A clear view of usage, service history and toner consumption across every machine on the contract.",
       },
+      {
+        title: "Leasing",
+        description:
+          "Structured leases that spread the cost of the hardware over the term, so the machines sit on a predictable monthly line rather than a capital purchase. Ownership options at the end of term.",
+      },
+      {
+        title: "FSMA (Full-Service Maintenance Agreement)",
+        description:
+          "Hardware, consumables, parts, labour and support bundled into a single agreement billed per month or per page. One invoice, one point of contact, no separate toner or call-out charges.",
+      },
     ],
     highlights: [
       "A fixed annual cost you can budget for",

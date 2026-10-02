@@ -98,7 +98,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
     <>
       <PageHeader
         breadcrumbs={[
-          { label: "Products", href: "/products/printers-copiers" },
+          { label: "Products", href: "/products" },
           {
             label: category?.title ?? "Products",
             href: `/products/${product.category}`,

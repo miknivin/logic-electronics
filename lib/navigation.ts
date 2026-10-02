@@ -4,17 +4,15 @@ import {
   Cctv,
   Cpu,
   Database,
-  Globe,
   Network,
   Phone,
   Printer,
   Repeat,
-  Truck,
   Wrench,
-  Zap,
 } from "lucide-react";
 
 import { productCategories } from "@/lib/products";
+import { serviceCategories } from "@/lib/services";
 
 export type MenuLink = { label: string; href: string };
 
@@ -72,6 +70,7 @@ function productColumn(slug: string, icon: LucideIcon): MenuColumn {
 const productsMenu: MegaMenu = {
   key: "products",
   label: "Products",
+  href: "/products",
   variant: "columns",
   columns: [
     productColumn("sales", Printer),
@@ -81,7 +80,7 @@ const productsMenu: MegaMenu = {
   ],
   footerNote: "New, refurbished and rental hardware, plus consumables for every brand we service.",
   footerLabel: "Browse all products",
-  footerHref: "/products/printers-copiers",
+  footerHref: "/products",
 };
 
 /**
@@ -95,56 +94,19 @@ const servicesMenu: MegaMenu = {
   href: "/services",
   variant: "headings",
   /*
-   * The seven headings the report specifies, rather than all 40 sub-items,
-   * which the client flagged as overcrowded (report item 8). Each one links
-   * to the content that actually covers it — a services-page section where
-   * one exists, otherwise the specific offering on the relevant service
-   * page, so no heading lands on something unrelated.
+   * The five category headings that actually exist as sections on the
+   * services page, every one linking to its own section. An earlier version
+   * listed the report's seven headings, but three of those had no section to
+   * land on and jumped into individual service pages instead — the client
+   * flagged the inconsistency. Uniform behaviour matters more here than
+   * matching the report's wording.
    */
-  columns: [
-    {
-      title: "Printer & Copier Services",
-      icon: Printer,
-      href: "/services#print-copier",
-      links: [],
-    },
-    {
-      title: "Managed IT Services",
-      icon: Cpu,
-      href: "/services/managed-it-services",
-      links: [],
-    },
-    {
-      title: "Installation & Deployment",
-      icon: Wrench,
-      href: "/services/managed-it-services#new-office-it-setup",
-      links: [],
-    },
-    {
-      title: "Network & CCTV Maintenance",
-      icon: Network,
-      href: "/services/networking-and-switching",
-      links: [],
-    },
-    {
-      title: "UPS Services",
-      icon: Zap,
-      href: "/services/datacenter-solutions#ups-solutions",
-      links: [],
-    },
-    {
-      title: "Office Shifting & IT Relocation",
-      icon: Truck,
-      href: "/services/managed-it-services#office-shifting-and-datacenter-relocation",
-      links: [],
-    },
-    {
-      title: "Digital Services",
-      icon: Globe,
-      href: "/services#digital",
-      links: [],
-    },
-  ],
+  columns: serviceCategories.map((category) => ({
+    title: category.title,
+    icon: category.icon,
+    href: `/services#${category.key}`,
+    links: [],
+  })),
   footerNote: "Repairs, maintenance, AMC and IT support delivered by our own engineers.",
   footerLabel: "View all services",
   footerHref: "/services",
@@ -250,8 +212,8 @@ const rentalsMenu: MegaMenu = {
       links: [
         { label: "AMC", href: "/services/printer-amc" },
         { label: "Annual Rental Contracts", href: "/services/printer-and-copier-rental" },
-        { label: "Leasing", href: "/contact" },
-        { label: "FSMA", href: "/services/managed-it-services" },
+        { label: "Leasing", href: "/services/printer-amc#leasing" },
+        { label: "FSMA", href: "/services/printer-amc#fsma-full-service-maintenance-agreement" },
       ],
     },
   ],

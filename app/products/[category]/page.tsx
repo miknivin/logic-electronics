@@ -67,7 +67,7 @@ export default async function ProductCategoryPage({ params }: PageProps) {
     <>
       <PageHeader
         breadcrumbs={[
-          { label: "Products", href: "/products/sales" },
+          { label: "Products", href: "/products" },
           { label: category.title },
         ]}
         title={category.heading}
@@ -91,6 +91,7 @@ export default async function ProductCategoryPage({ params }: PageProps) {
                 subcategories: category.subcategories.map((sub) => ({
                   slug: sub.slug,
                   label: sub.label,
+                  linkTo: sub.linkTo,
                 })),
               }}
               membership={Object.fromEntries(

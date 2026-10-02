@@ -12,7 +12,7 @@ import { productImage, type Product, type ProductBadge } from "@/lib/products";
 type ListingCategory = {
   slug: string;
   title: string;
-  subcategories: { slug: string; label: string }[];
+  subcategories: { slug: string; label: string; linkTo?: string }[];
 };
 
 type ProductListingProps = {
@@ -101,9 +101,17 @@ export function ProductListing({
             {category.subcategories.map((sub) => (
               <li key={sub.slug}>
                 <Link
-                  href={`/products/${category.slug}?type=${sub.slug}`}
-                  aria-current={activeSub?.slug === sub.slug ? "true" : undefined}
-                  className={tabClass(activeSub?.slug === sub.slug)}
+                  /* A sub-category whose products live elsewhere links to
+                     that category's page, matching what the mega menu does —
+                     otherwise "New Printers" filtered Sales and showed
+                     laptops. */
+                  href={`/products/${sub.linkTo ?? category.slug}?type=${sub.slug}`}
+                  aria-current={
+                    !sub.linkTo && activeSub?.slug === sub.slug
+                      ? "true"
+                      : undefined
+                  }
+                  className={tabClass(!sub.linkTo && activeSub?.slug === sub.slug)}
                 >
                   {sub.label}
                 </Link>
