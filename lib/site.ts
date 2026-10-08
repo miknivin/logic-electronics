@@ -190,10 +190,16 @@ export const navLinks = [
 ] as const;
 
 /**
- * The three rotating hero states on the home page. Layout and CTA position
+ * The five rotating hero states on the home page. Layout and CTA position
  * stay fixed; only the badge, headline, keyword line, description, image and
- * CTA change, so the section reads as one company covering three fronts
- * rather than three unrelated banners.
+ * CTA change, so the section reads as one company covering five fronts
+ * rather than five unrelated banners.
+ *
+ * Each `image` is one of the five commissioned banners in
+ * `public/imgs/hero/banners/`, matched to what it actually depicts rather
+ * than forced to fit — e.g. the globe linking Mumbai, Abu Dhabi and London
+ * became its own "UAE, India & UK" state instead of being shoehorned behind
+ * unrelated copy.
  */
 export type HeroSlide = {
   badge: string;
@@ -203,6 +209,9 @@ export type HeroSlide = {
   description: string;
   ctaLabel: string;
   ctaHref: string;
+  /** Filename within public/imgs/hero/banners/. */
+  image: string;
+  alt: string;
 };
 
 export const heroSlides: HeroSlide[] = [
@@ -225,6 +234,8 @@ export const heroSlides: HeroSlide[] = [
       "Sales, rental, repair and consumables for every major printer and copier brand, backed by same-day service across the UAE.",
     ctaLabel: "Explore Printer & Copier Solutions",
     ctaHref: "/services#print-copier",
+    image: "Logic-Banner-5-2048x998.webp",
+    alt: "An office with a printer and laptop connected through a glowing loop to a server and networking rack, representing printer and copier support backed by full IT infrastructure",
   },
   {
     badge: "IT Hardware & Support",
@@ -244,11 +255,32 @@ export const heroSlides: HeroSlide[] = [
       "From a single laptop to a full office rollout, we supply, configure and support the hardware your business runs on.",
     ctaLabel: "Explore IT Hardware & Support",
     ctaHref: "/services#office-supplies",
+    image: "Logic-Banner-2-2048x998.webp",
+    alt: "A legacy desktop computer transforming into modern servers, cloud storage and a laptop, set against the Abu Dhabi and Dubai skyline",
   },
   {
-    badge: "Service & Support",
-    headline: "Every product we sell,",
-    highlight: "backed by real engineers",
+    badge: "Security & Communication",
+    headline: "Keep your business",
+    highlight: "protected and connected",
+    keywords: [
+      "CCTV & Surveillance",
+      "Access Control",
+      "Biometric Attendance",
+      "Networking",
+      "Cybersecurity",
+      "Communication Systems",
+    ],
+    description:
+      "CCTV, access control, networking and unified communication systems, designed and installed end to end across the UAE.",
+    ctaLabel: "Explore Security & Communication",
+    ctaHref: "/services#security-communication",
+    image: "Logic-Banner-4-2048x998.webp",
+    alt: "A security shield with a checkmark alongside networking hardware and a laptop, representing CCTV, access control and cybersecurity solutions",
+  },
+  {
+    badge: "Complete Office & IT Equipment",
+    headline: "Every piece of office tech,",
+    highlight: "under one roof",
     keywords: [
       "Print & Copier",
       "IT Infrastructure",
@@ -261,6 +293,27 @@ export const heroSlides: HeroSlide[] = [
       "Repairs, scheduled maintenance and AMC cover delivered by our own team, on everything from a single printer to your full IT and security setup.",
     ctaLabel: "View All Services",
     ctaHref: "/services",
+    image: "Logic-Banner-1-2048x998.webp",
+    alt: "A laptop, server racks, a network switch and a printer arranged together overlooking the Abu Dhabi and Dubai skylines",
+  },
+  {
+    badge: "Serving the UAE, India & the UK",
+    headline: "One partner,",
+    highlight: "across three countries",
+    keywords: [
+      "Abu Dhabi",
+      "Madinat Zayed",
+      "Mussafah",
+      "Kozhikode",
+      "London",
+      "5 Offices",
+    ],
+    description:
+      "Five offices across the UAE, India and the United Kingdom, so wherever your business operates, the same team is behind it.",
+    ctaLabel: "More About Us",
+    ctaHref: "/about",
+    image: "Logic-Banner-3-2048x998.webp",
+    alt: "A globe connecting the Gateway of India in Mumbai, the Abu Dhabi and Dubai skyline, and London landmarks including Tower Bridge and the Shard",
   },
 ];
 

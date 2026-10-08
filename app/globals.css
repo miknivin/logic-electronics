@@ -196,6 +196,18 @@
   .animate-fade-in {
     animation: fade-in 0.6s ease-out both;
   }
+
+  /* Hero background carousel motion: the incoming banner sweeps in from
+     off-screen rather than crossfading in place, so moving between states
+     reads as a slide, not a dissolve. Direction is picked at the call site
+     (hero-slider.tsx) based on which way the visitor is navigating. */
+  .animate-slide-in-right {
+    animation: slide-in-right 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-slide-in-left {
+    animation: slide-in-left 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 }
 
 /* Fixed attachment is janky-to-broken on mobile Safari, so below the
@@ -262,6 +274,24 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 

@@ -1,82 +1,103 @@
 "use client";
 
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  ArrowRight,
-  Cctv,
-  ChevronLeft,
-  ChevronRight,
-  Cpu,
-  Globe,
-  Printer,
-  ShoppingBag,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-import printCopierPhoto from "@/public/imgs/hero/1.webp";
-import itHardwarePhoto from "@/public/imgs/hero/2.webp";
-import serviceTechnicianPhoto from "@/public/imgs/hero/3.webp";
+import { Container } from "@/components/container";
 import { heroSlides } from "@/lib/site";
 
 const SLIDE_DURATION_MS = 6000;
 
-/** Image shown behind each of the three rotating states, in order. */
-const slideImages: { src: StaticImageData; alt: string }[] = [
-  {
-    src: printCopierPhoto,
-    alt: "A Logic Electronics staff member serving a customer at the printer and copier counter, with the print, copy, scan and manage services signage behind her",
-  },
-  {
-    src: itHardwarePhoto,
-    alt: "Logic Electronics IT engineers working on hardware and network support at a workstation",
-  },
-  {
-    src: serviceTechnicianPhoto,
-    alt: "A Logic Electronics technician servicing a copier's toner and imaging unit, under the 'keep your business printing' signage",
-  },
-];
-
-/** Overlaid on the third, "everything we do" state to sell the overview at a glance. */
-const overviewIcons: LucideIcon[] = [Printer, Cpu, Cctv, Globe, ShoppingBag];
-
 /**
- * Dynamic hero: layout and CTA position stay fixed while the badge, headline,
- * keyword line, description, image and CTA rotate through three states.
- * Text re-entrance uses `animate-slide-up`, retriggered on every index change
- * via the `key` prop, so each new state reads as sliding upward into place.
+ * Full-bleed hero: a commissioned banner illustration fills the entire
+ * section width behind the copy, rather than sitting in a small boxed panel
+ * beside it. Layout and CTA position stay fixed while the badge, headline,
+ * keyword line, description, background image and CTA rotate through five
+ * states — see the `heroSlides` data in lib/site.ts for how each banner was
+ * matched to its content.
+ *
+ * Text re-entrance uses `animate-slide-up`, retriggered on every index
+ * change via the `key` prop. The background crossfades the same way via
+ * `animate-fade-in`.
  *
  * Autoplay pauses only while the cursor is over the content column (badge
  * through the nav buttons) — someone reading the copy or about to click a
- * CTA shouldn't have it shift under them. The image column is excluded, so
- * autoplay keeps running for a visitor just looking at the photo.
+ * CTA shouldn't have it shift under them.
  */
 export function HeroSlider() {
   const [index, setIndex] = useState(0);
+  /* +1 = incoming banner sweeps in from the right (forward through the
+     states), -1 = from the left (backward). Autoplay and "next" always go
+     forward; "previous" and a dot click behind the current state go back. */
+  const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     if (isPaused) return;
     const timer = window.setInterval(() => {
+      setDirection(1);
       setIndex((current) => (current + 1) % heroSlides.length);
     }, SLIDE_DURATION_MS);
     return () => window.clearInterval(timer);
   }, [isPaused]);
 
   const slide = heroSlides[index];
-  const image = slideImages[index];
 
-  const goToPrevious = () =>
+  const goToPrevious = () => {
+    setDirection(-1);
     setIndex((current) => (current - 1 + heroSlides.length) % heroSlides.length);
-  const goToNext = () =>
+  };
+  const goToNext = () => {
+    setDirection(1);
     setIndex((current) => (current + 1) % heroSlides.length);
+  };
+  const goToSlide = (target: number) => {
+    setDirection(target > index ? 1 : target < index ? -1 : direction);
+    setIndex(target);
+  };
 
   return (
-    <div className="relative">
-      <div className="relative grid items-center gap-12 py-16 lg:grid-cols-12 lg:gap-16 lg:py-20">
+    <section className="relative isolate overflow-hidden bg-primary-900 bg-circuit">
+      {/* Full-width background banner, sliding in from the direction of
+          travel rather than crossfading in place — a carousel sweep, not a
+          dissolve. Sized off the source art's own 2048x998 (~2.05:1) ratio
+          so it never looks squashed, while `object-cover` fills whatever
+          the viewport shape actually is. */}
+      <div
+        key={index}
+        className={`absolute inset-0 ${
+          direction === 1 ? "animate-slide-in-right" : "animate-slide-in-left"
+        }`}
+      >
+        <Image
+          src={`/imgs/hero/banners/${slide.image}`}
+          alt={slide.alt}
+          fill
+          priority={index === 0}
+          sizes="100vw"
+          className="object-cover"
+        />
+      </div>
+
+      {/* Readability gradient: strong under the text column on the left,
+          easing off toward the right so the illustration still reads. A
+          second, vertical pass keeps the bottom control row legible too,
+          since the source art runs light in places (banners 2, 4 and 5 are
+          mostly white/light blue). */}
+      <div
+        className="absolute inset-0 bg-linear-to-r from-primary-950/95 via-primary-950/75 to-primary-950/20"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 bg-linear-to-t from-primary-950/70 via-transparent to-transparent"
+        aria-hidden="true"
+      />
+
+      <Container className="relative">
         <div
-          className="lg:col-span-7"
+          className="max-w-2xl py-20 sm:py-24 lg:py-28"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -103,7 +124,7 @@ export function HeroSlider() {
               ))}
             </p>
 
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-primary-100">
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-primary-100">
               {slide.description}
             </p>
           </div>
@@ -117,7 +138,7 @@ export function HeroSlider() {
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Link>
             {/* Fixed secondary CTA, distinct from every state's own primary
-                CTA above (which is "View All Services" on the third state). */}
+                CTA above (which is "View All Services" on state 4). */}
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-white/30 px-7 py-3.5 text-base font-semibold text-white transition-colors hover:bg-white/10"
@@ -150,7 +171,7 @@ export function HeroSlider() {
                   role="tab"
                   aria-selected={itemIndex === index}
                   aria-label={item.badge}
-                  onClick={() => setIndex(itemIndex)}
+                  onClick={() => goToSlide(itemIndex)}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
                     itemIndex === index
                       ? "w-8 bg-secondary-400"
@@ -170,49 +191,7 @@ export function HeroSlider() {
             </button>
           </div>
         </div>
-
-        {/* Hero image, fixed slot, contents crossfade with the state. */}
-        <div className="lg:col-span-5">
-          <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
-            <span
-              className="absolute -right-4 -top-4 h-24 w-24 rounded-2xl bg-secondary-500 sm:-right-5 sm:-top-5 sm:h-28 sm:w-28"
-              aria-hidden="true"
-            />
-
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/15">
-              <div key={index} className="animate-fade-in">
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  placeholder="blur"
-                  priority
-                  sizes="(min-width: 1024px) 30rem, (min-width: 640px) 24rem, 100vw"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div
-                className="absolute inset-0 bg-linear-to-t from-primary-950/45 via-transparent to-transparent"
-                aria-hidden="true"
-              />
-
-              {/* Overview state: layer the five business areas on the photo. */}
-              {index === 2 ? (
-                <div className="absolute inset-x-0 bottom-0 flex flex-wrap gap-2 p-4">
-                  {overviewIcons.map((Icon, iconIndex) => (
-                    <span
-                      key={iconIndex}
-                      className="animate-slide-up inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/95 text-primary-700 shadow-lg"
-                      style={{ animationDelay: `${iconIndex * 80}ms` }}
-                    >
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </span>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </Container>
+    </section>
   );
 }

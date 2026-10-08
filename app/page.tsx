@@ -55,16 +55,11 @@ export default function HomePage() {
   return (
     <>
       {/* ------------------------------------------------------------ hero */}
-      <section className="relative overflow-hidden bg-primary-900 bg-circuit">
-        <div
-          className="pointer-events-none absolute -right-24 top-1/2 hidden h-128 w-lg -translate-y-1/2 rounded-full bg-secondary-500/15 blur-3xl lg:block"
-          aria-hidden="true"
-        />
-
-        <Container>
-          <HeroSlider />
-        </Container>
-      </section>
+      {/* HeroSlider owns its full section markup (background banner,
+          overlay, Container-wrapped copy) — the full-bleed image needs to
+          run past the page's usual max-w-7xl, so it can't sit inside a
+          Container the way the rest of the page does. */}
+      <HeroSlider />
 
       {/* ----------------------------------------------------------- stats */}
       <section className="border-b border-slate-200 bg-slate-50">
